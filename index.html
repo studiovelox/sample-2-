@@ -108,6 +108,12 @@
 <body class="selection:bg-gold selection:text-obsidian antialiased">
 
   <!-- =================================================================
+       DEDICATED HIDDEN FILE & FOLDER INPUTS (100% BROWSER COMPATIBLE)
+       ================================================================= -->
+  <input type="file" id="frame-files-input" multiple accept="image/*,.jpg,.jpeg,.png,.webp,.avif,.bmp" style="display:none" />
+  <input type="file" id="frame-folder-input" webkitdirectory directory multiple style="display:none" />
+
+  <!-- =================================================================
        OPTICAL HD SHARPNESS SVG CONVOLUTION FILTER (FOR RAZOR-SHARP FRAMES)
        ================================================================= -->
   <svg class="hidden" width="0" height="0" aria-hidden="true">
@@ -133,6 +139,14 @@
 
       <!-- MAIN INTERACTIVE HTML5 FRAME CANVAS (RETINA HIGH-DPI + HD CRISP) -->
       <canvas id="renovation-canvas" class="w-full h-full block mode-day hd-crisp-active transition-all duration-300"></canvas>
+
+      <!-- DRAG & DROP VIDEO FRAMES VISUAL OVERLAY -->
+      <div id="drop-zone-overlay" class="absolute inset-0 z-40 bg-obsidian/90 backdrop-blur-md border-4 border-dashed border-gold hidden items-center justify-center pointer-events-none">
+        <div class="text-center p-8">
+          <p class="font-mono text-sm uppercase tracking-[0.3em] text-gold mb-2">Drop Video Frames Here</p>
+          <h3 class="font-serif text-4xl md:text-5xl text-alabaster">Instant 4K Frame Scrubber</h3>
+        </div>
+      </div>
 
       <!-- X-RAY CAD BLUEPRINT LOUPE OVERLAY (Follows cursor when X-Ray is toggled ON) -->
       <div id="xray-layer" class="absolute inset-0 bg-[#071626]/95 z-20">
@@ -177,15 +191,21 @@
 
         <!-- VIDEO FRAME LOADER + ZOOM / FIT + HD SHARPNESS + LIGHTING TOOLBAR -->
         <div class="flex flex-wrap items-center gap-2">
-          <label class="cursor-pointer bg-gold hover:bg-goldDark text-obsidian font-mono text-[11px] font-semibold uppercase tracking-wider px-3 py-1.5 rounded-full transition flex items-center gap-1.5 shadow-lg">
+          <button
+            type="button"
+            onclick="triggerFrameFilesPicker()"
+            class="cursor-pointer bg-gold hover:bg-goldDark active:scale-95 text-obsidian font-mono text-[11px] font-semibold uppercase tracking-wider px-3.5 py-1.5 rounded-full transition flex items-center gap-1.5 shadow-lg"
+          >
             <span>📂 Select Video Frames</span>
-            <input type="file" id="frame-files-input" multiple accept="image/*" class="hidden" />
-          </label>
+          </button>
 
-          <label class="cursor-pointer bg-obsidian/90 hover:bg-gold/20 text-gold border border-gold/50 font-mono text-[11px] uppercase tracking-wider px-3 py-1.5 rounded-full transition hidden md:flex items-center gap-1.5">
+          <button
+            type="button"
+            onclick="triggerFrameFolderPicker()"
+            class="cursor-pointer bg-obsidian/90 hover:bg-gold hover:text-obsidian active:scale-95 text-gold border border-gold/50 font-mono text-[11px] uppercase tracking-wider px-3.5 py-1.5 rounded-full transition flex items-center gap-1.5 shadow"
+          >
             <span>📁 Select Folder</span>
-            <input type="file" id="frame-folder-input" webkitdirectory directory multiple class="hidden" />
-          </label>
+          </button>
 
           <!-- Frame Fit & Live Zoom Controls (Fixes Over-Zoomed Video Frames) -->
           <div class="flex items-center bg-obsidian/85 border border-gold/30 rounded-full p-0.5 text-[11px] font-mono">
@@ -273,9 +293,10 @@
           </p>
           <div class="flex flex-wrap items-center justify-between gap-2 pt-2.5 border-t border-white/10">
             <p id="frame-source-badge" class="font-mono text-[10px] text-emerald-400 uppercase tracking-wider">
-              ⚡ 120-Frame 3D Engine Active (Or load your video frames above)
+              ⚡ 120-Frame 3D Engine Active (Click "Select Video Frames" or Drop Files)
             </p>
             <div class="flex items-center gap-1.5">
+              <button type="button" onclick="triggerFrameFilesPicker()" class="px-2.5 py-1 rounded bg-gold/20 hover:bg-gold text-gold hover:text-obsidian border border-gold/40 text-xs font-mono transition">+ Load Frames</button>
               <button type="button" onclick="stepStage(-1)" class="px-2.5 py-1 rounded bg-white/10 hover:bg-gold hover:text-obsidian text-xs font-mono transition">← Prev</button>
               <button type="button" onclick="stepStage(1)" class="px-2.5 py-1 rounded bg-white/10 hover:bg-gold hover:text-obsidian text-xs font-mono transition">Next →</button>
             </div>
@@ -679,34 +700,157 @@
       jumpToStage(currentStage + delta);
     }
 
-    // Handle Local Video Frame Uploads (Files or Folder)
-    function handleSelectedFiles(fileList) {
-      const files = Array.from(fileList).filter(f => f.type.startsWith('image/'));
-      if (!files.length) return;
+    // Bulletproof Explicit File & Folder Picker Triggers
+    let activeObjectURLs = [];
 
+    function triggerFrameFilesPicker() {
+      const input = document.getElementById('frame-files-input');
+      if (input) {
+        input.value = ''; // Reset so re-selecting the exact same files always fires onchange
+        input.click();
+      }
+    }
+
+    function triggerFrameFolderPicker() {
+      const input = document.getElementById('frame-folder-input');
+      if (input) {
+        input.value = ''; // Reset so re-selecting the exact same folder always fires onchange
+        input.click();
+      }
+    }
+
+    // Progressive Instant Video Frame Loader (Never hangs on 486+ frames or Windows system files)
+    function handleSelectedFiles(fileList) {
+      if (!fileList || fileList.length === 0) return;
+
+      // Accept both standard image MIME types and common image extensions (ignores Thumbs.db / desktop.ini)
+      const imageRegex = /\.(jpe?g|png|webp|avif|bmp|gif)$/i;
+      const files = Array.from(fileList).filter(
+        f => (f.type && f.type.startsWith('image/')) || imageRegex.test(f.name)
+      );
+
+      const badge = document.getElementById('frame-source-badge');
+      if (!files.length) {
+        if (badge) {
+          badge.textContent = '⚠️ No valid image frames found in selection. Please select JPG/PNG/WebP frames.';
+          badge.className = 'font-mono text-[10px] text-amber-400 uppercase tracking-wider';
+        }
+        return;
+      }
+
+      // Natural alphanumeric sort (e.g. frame_001.jpg, frame_002.jpg ... frame_486.jpg)
       files.sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' }));
 
-      const loaded = [];
-      let count = 0;
-      document.getElementById('frame-source-badge').textContent = `⏳ Loading ${files.length} Video Frames...`;
+      // Cleanup previous blob URLs to free memory
+      if (activeObjectURLs.length > 0) {
+        activeObjectURLs.forEach(url => URL.revokeObjectURL(url));
+        activeObjectURLs = [];
+      }
+
+      const total = files.length;
+      const newFrames = new Array(total);
+      userFrames = newFrames; // Activate immediately so the canvas switches to video mode right away!
+
+      let loadedCount = 0;
+      let failedCount = 0;
+
+      if (badge) {
+        badge.className = 'font-mono text-[10px] text-emerald-400 uppercase tracking-wider';
+        badge.textContent = `⏳ Streaming ${total} Video Frames (0 / ${total})...`;
+      }
 
       files.forEach((file, idx) => {
         const img = new Image();
+        img.decoding = 'async';
+        const objUrl = URL.createObjectURL(file);
+        activeObjectURLs.push(objUrl);
+
         img.onload = () => {
-          count++;
-          if (count === files.length) {
-            userFrames = loaded;
-            document.getElementById('frame-source-badge').textContent =
-              `✅ Custom Video Sequence Active (${userFrames.length} Frames Loaded — Scroll to Scrub!)`;
+          newFrames[idx] = img;
+          loadedCount++;
+          const done = loadedCount + failedCount;
+
+          if (done === total) {
+            if (badge) {
+              badge.textContent = `✅ Custom Video Sequence Active (${loadedCount} Frames Ready — Scroll to Scrub!)`;
+            }
+          } else if (loadedCount === 1 || loadedCount % 25 === 0) {
+            if (badge) {
+              badge.textContent = `⚡ Custom Video Active: Loaded ${loadedCount} / ${total} Frames...`;
+            }
           }
         };
-        img.src = URL.createObjectURL(file);
-        loaded[idx] = img;
+
+        img.onerror = () => {
+          failedCount++;
+          const done = loadedCount + failedCount;
+          if (done === total && badge) {
+            badge.textContent = `✅ Custom Video Sequence Active (${loadedCount} Frames Ready — Scroll to Scrub!)`;
+          }
+        };
+
+        img.src = objUrl;
       });
     }
 
-    document.getElementById('frame-files-input').addEventListener('change', e => handleSelectedFiles(e.target.files));
-    document.getElementById('frame-folder-input').addEventListener('change', e => handleSelectedFiles(e.target.files));
+    document.getElementById('frame-files-input').addEventListener('change', function (e) {
+      handleSelectedFiles(e.target.files);
+    });
+
+    document.getElementById('frame-folder-input').addEventListener('change', function (e) {
+      handleSelectedFiles(e.target.files);
+    });
+
+    // Support Drag & Drop of video frames directly onto the Hero section
+    const heroContainer = document.getElementById('hero-scroll-container');
+    const dropOverlay = document.getElementById('drop-zone-overlay');
+
+    window.addEventListener('dragover', e => {
+      e.preventDefault();
+      if (dropOverlay) {
+        dropOverlay.classList.remove('hidden');
+        dropOverlay.classList.add('flex');
+      }
+    });
+
+    window.addEventListener('dragleave', e => {
+      if (e.relatedTarget === null && dropOverlay) {
+        dropOverlay.classList.add('hidden');
+        dropOverlay.classList.remove('flex');
+      }
+    });
+
+    window.addEventListener('drop', e => {
+      e.preventDefault();
+      if (dropOverlay) {
+        dropOverlay.classList.add('hidden');
+        dropOverlay.classList.remove('flex');
+      }
+      if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+        handleSelectedFiles(e.dataTransfer.files);
+      }
+    });
+
+    // Helper: Find nearest loaded frame so scrubbing works even while 486 frames are still streaming in
+    function getBestAvailableFrame(targetIdx) {
+      if (!userFrames || userFrames.length === 0) return null;
+      const direct = userFrames[targetIdx];
+      if (direct && direct.complete && direct.naturalWidth > 0) return direct;
+
+      // Search outward for the closest decoded frame
+      const len = userFrames.length;
+      for (let offset = 1; offset < len; offset++) {
+        const prev = targetIdx - offset;
+        if (prev >= 0 && userFrames[prev] && userFrames[prev].complete && userFrames[prev].naturalWidth > 0) {
+          return userFrames[prev];
+        }
+        const next = targetIdx + offset;
+        if (next < len && userFrames[next] && userFrames[next].complete && userFrames[next].naturalWidth > 0) {
+          return userFrames[next];
+        }
+      }
+      return null;
+    }
 
     function drawSmartVideoFrame(ctx, img, w, h) {
       if (!img || !img.complete || !img.naturalWidth) return;
@@ -989,9 +1133,10 @@
       const frameIdx = Math.min(totalFrames - 1, Math.floor(currentScrollProgress * totalFrames));
       const stageIdx = Math.min(7, Math.floor(currentScrollProgress * 8));
 
-      if (userFrames.length > 0 && userFrames[frameIdx]) {
+      const activeFrameImg = userFrames.length > 0 ? getBestAvailableFrame(frameIdx) : null;
+      if (activeFrameImg) {
         ctx.clearRect(0, 0, cssWidth, cssHeight);
-        drawSmartVideoFrame(ctx, userFrames[frameIdx], cssWidth, cssHeight);
+        drawSmartVideoFrame(ctx, activeFrameImg, cssWidth, cssHeight);
       } else {
         drawProceduralRoom(currentScrollProgress, cssWidth, cssHeight);
       }
