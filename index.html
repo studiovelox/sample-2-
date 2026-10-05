@@ -1,37 +1,4 @@
-<!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DAGORIYA — Haute Architecture &amp; Interior Couture</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,600&family=JetBrains+Mono:wght@300;400;500&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            alabaster: '#FAF8F5',
-            pearl: '#F2ECE1',
-            charcoal: '#1C1C1C',
-            obsidian: '#0B0B0A',
-            gold: '#C5A880',
-            goldDark: '#9A7B50',
-            taupe: '#6E6A64'
-          },
-          fontFamily: {
-            serif: ['"Cormorant Garamond"', 'Georgia', 'serif'],
-            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
-            mono: ['"JetBrains Mono"', 'monospace']
-          }
-        }
-      }
-    };
-  </script>
-
+<!-- ... existing code ... -->
   <style>
     :root {
       --cx: 50vw;
@@ -53,25 +20,24 @@
       background: #C5A880;
       border-radius: 3px;
     }
-    /* Hero Ambiance Lighting Modes */
+    /* Pure GPU-Accelerated Lighting & Crispness Modes (Zero hidden SVG filter bugs) */
     .mode-day {
-      filter: brightness(1.03) contrast(1.02) saturate(1.0);
+      filter: brightness(1.02) contrast(1.02) saturate(1.0);
     }
     .mode-golden {
-      filter: brightness(0.96) contrast(1.08) sepia(0.24) saturate(1.3);
+      filter: brightness(0.96) contrast(1.08) sepia(0.22) saturate(1.28);
     }
     .mode-night {
       filter: brightness(0.68) contrast(1.18) hue-rotate(-10deg) saturate(0.88);
     }
-    /* Optical HD Sharpness Enhancement for Extracted Video Frames */
     .hd-crisp-active.mode-day {
-      filter: url(#hd-sharpen) brightness(1.02) contrast(1.06) saturate(1.04);
+      filter: brightness(1.02) contrast(1.08) saturate(1.06);
     }
     .hd-crisp-active.mode-golden {
-      filter: url(#hd-sharpen) brightness(0.96) contrast(1.1) sepia(0.22) saturate(1.28);
+      filter: brightness(0.96) contrast(1.12) sepia(0.22) saturate(1.32);
     }
     .hd-crisp-active.mode-night {
-      filter: url(#hd-sharpen) brightness(0.7) contrast(1.2) hue-rotate(-10deg) saturate(0.9);
+      filter: brightness(0.7) contrast(1.22) hue-rotate(-10deg) saturate(0.92);
     }
     /* X-Ray CAD Blueprint Circular Lens */
     #xray-layer {
@@ -108,28 +74,10 @@
 <body class="selection:bg-gold selection:text-obsidian antialiased">
 
   <!-- =================================================================
-       DEDICATED HIDDEN FILE & FOLDER INPUTS (100% BROWSER COMPATIBLE)
+       DEDICATED FILE & FOLDER INPUTS (100% BROWSER COMPATIBLE)
        ================================================================= -->
-  <input type="file" id="frame-files-input" multiple accept="image/*,.jpg,.jpeg,.png,.webp,.avif,.bmp" style="display:none" />
-  <input type="file" id="frame-folder-input" webkitdirectory directory multiple style="display:none" />
-
-  <!-- =================================================================
-       OPTICAL HD SHARPNESS SVG CONVOLUTION FILTER (FOR RAZOR-SHARP FRAMES)
-       ================================================================= -->
-  <svg class="hidden" width="0" height="0" aria-hidden="true">
-    <defs>
-      <filter id="hd-sharpen" x="0%" y="0%" width="100%" height="100%" color-interpolation-filters="sRGB">
-        <!-- Subtle Unsharp-Mask Convolution Matrix for Video Frames -->
-        <feConvolveMatrix
-          order="3 3"
-          preserveAlpha="true"
-          kernelMatrix="0 -0.35 0 -0.35 2.4 -0.35 0 -0.35 0"
-          divisor="1"
-          bias="0"
-        />
-      </filter>
-    </defs>
-  </svg>
+  <input type="file" id="frame-files-input" multiple accept="image/*,.jpg,.jpeg,.png,.webp,.avif,.bmp" class="sr-only" />
+  <input type="file" id="frame-folder-input" webkitdirectory directory multiple class="sr-only" />
 
   <!-- =================================================================
        PART 1: 800VH STICKY VIDEO-FRAME SCROLL-TO-RENOVATE HERO
@@ -137,14 +85,14 @@
   <section id="hero-scroll-container" class="relative w-full" style="height: 800vh;">
     <div class="sticky top-0 left-0 w-full h-screen overflow-hidden bg-obsidian select-none">
 
-      <!-- MAIN INTERACTIVE HTML5 FRAME CANVAS (RETINA HIGH-DPI + HD CRISP) -->
+      <!-- MAIN INTERACTIVE HTML5 FRAME CANVAS (RETINA HIGH-DPI + GPU CRISP) -->
       <canvas id="renovation-canvas" class="w-full h-full block mode-day hd-crisp-active transition-all duration-300"></canvas>
 
       <!-- DRAG & DROP VIDEO FRAMES VISUAL OVERLAY -->
       <div id="drop-zone-overlay" class="absolute inset-0 z-40 bg-obsidian/90 backdrop-blur-md border-4 border-dashed border-gold hidden items-center justify-center pointer-events-none">
         <div class="text-center p-8">
-          <p class="font-mono text-sm uppercase tracking-[0.3em] text-gold mb-2">Drop Video Frames Here</p>
-          <h3 class="font-serif text-4xl md:text-5xl text-alabaster">Instant 4K Frame Scrubber</h3>
+          <p class="font-mono text-sm uppercase tracking-[0.3em] text-gold mb-2">Drop Your 486+ Video Frames Here</p>
+          <h3 class="font-serif text-4xl md:text-5xl text-alabaster">Instant 4K Retina Frame Scrubber</h3>
         </div>
       </div>
 
@@ -179,48 +127,53 @@
       </div>
 
       <!-- SUBTLE VIGNETTE OVERLAY FOR HUD LEGIBILITY -->
-      <div class="absolute inset-0 bg-gradient-to-t from-obsidian/85 via-transparent to-obsidian/60 pointer-events-none z-10"></div>
+      <div class="absolute inset-0 bg-gradient-to-t from-obsidian/80 via-transparent to-obsidian/50 pointer-events-none z-10"></div>
 
-      <div class="absolute top-0 left-0 right-0 z-30 flex flex-wrap items-center justify-between gap-2.5 px-4 sm:px-6 py-3 bg-obsidian/70 backdrop-blur-md border-b border-gold/20">
+      <!-- TOP FLOATING BAR -->
+      <div class="absolute top-0 left-0 right-0 z-30 flex flex-wrap items-center justify-between gap-2.5 px-4 sm:px-6 py-3 bg-obsidian/75 backdrop-blur-md border-b border-gold/25">
         <div class="flex items-center gap-3">
           <span class="font-serif text-xl sm:text-2xl tracking-[0.28em] text-alabaster font-semibold">DAGORIYA</span>
-          <span class="hidden xl:inline-block text-[10px] font-mono uppercase tracking-[0.2em] text-gold border border-gold/30 px-2.5 py-0.5 rounded-full">
+          <span id="top-engine-pill" class="hidden xl:inline-block text-[10px] font-mono uppercase tracking-[0.2em] text-gold border border-gold/30 px-2.5 py-0.5 rounded-full">
             4K Retina Frame Engine
           </span>
         </div>
 
-        <!-- VIDEO FRAME LOADER + ZOOM / FIT + HD SHARPNESS + LIGHTING TOOLBAR -->
+        <!-- VIDEO FRAME LOADER + ANTI-OVERZOOM / FIT + HD SHARPNESS + LIGHTING TOOLBAR -->
         <div class="flex flex-wrap items-center gap-2">
-          <button
-            type="button"
-            onclick="triggerFrameFilesPicker()"
+          <!-- Native <label> + onclick reset ensures 100% browser file dialog reliability -->
+          <label
+            for="frame-files-input"
+            onclick="document.getElementById('frame-files-input').value = ''"
             class="cursor-pointer bg-gold hover:bg-goldDark active:scale-95 text-obsidian font-mono text-[11px] font-semibold uppercase tracking-wider px-3.5 py-1.5 rounded-full transition flex items-center gap-1.5 shadow-lg"
           >
             <span>📂 Select Video Frames</span>
-          </button>
+          </label>
 
-          <button
-            type="button"
-            onclick="triggerFrameFolderPicker()"
+          <label
+            for="frame-folder-input"
+            onclick="document.getElementById('frame-folder-input').value = ''"
             class="cursor-pointer bg-obsidian/90 hover:bg-gold hover:text-obsidian active:scale-95 text-gold border border-gold/50 font-mono text-[11px] uppercase tracking-wider px-3.5 py-1.5 rounded-full transition flex items-center gap-1.5 shadow"
           >
             <span>📁 Select Folder</span>
-          </button>
+          </label>
 
-          <!-- Frame Fit & Live Zoom Controls (Fixes Over-Zoomed Video Frames) -->
-          <div class="flex items-center bg-obsidian/85 border border-gold/30 rounded-full p-0.5 text-[11px] font-mono">
-            <button type="button" onclick="setFrameFitMode('contain')" id="fit-contain-btn" title="Zero Crop — Shows Full Video Frame" class="px-2.5 py-1 rounded-full bg-gold text-obsidian font-semibold transition">
-              Full Frame
+          <!-- Frame Fit & Live Zoom Controls (Prevents 16:9 Over-Zoom & Cropping) -->
+          <div class="flex items-center bg-obsidian/90 border border-gold/30 rounded-full p-0.5 text-[11px] font-mono">
+            <button type="button" onclick="setFrameFitMode('contain')" id="fit-contain-btn" title="Zero Crop — Shows 100% of Video Frame" class="px-2.5 py-1 rounded-full bg-gold text-obsidian font-semibold transition">
+              Fit (No Crop)
+            </button>
+            <button type="button" onclick="setFrameFitMode('balanced')" id="fit-balanced-btn" title="Balanced 92% Cinema Fit" class="px-2.5 py-1 rounded-full text-alabaster/75 hover:text-gold transition">
+              Balanced
             </button>
             <button type="button" onclick="setFrameFitMode('cover')" id="fit-cover-btn" title="Fill Screen Edge-to-Edge" class="px-2.5 py-1 rounded-full text-alabaster/75 hover:text-gold transition">
               Fill
             </button>
             <span class="h-3.5 w-[1px] bg-gold/25 mx-1"></span>
             <button type="button" onclick="adjustFrameZoom(-0.04)" title="Zoom Out Frame" class="px-2 py-0.5 text-gold hover:bg-white/10 rounded-full transition font-bold">−</button>
-            <span id="zoom-level-label" class="px-1.5 text-[10px] text-alabaster min-w-[38px] text-center">94%</span>
+            <span id="zoom-level-label" class="px-1.5 text-[10px] text-alabaster min-w-[38px] text-center">100%</span>
             <button type="button" onclick="adjustFrameZoom(0.04)" title="Zoom In Frame" class="px-2 py-0.5 text-gold hover:bg-white/10 rounded-full transition font-bold">+</button>
-            <button type="button" onclick="toggleHdCrisp()" id="hd-crisp-btn" title="Toggle Optical HD Unsharp Filter" class="ml-1 px-2.5 py-1 rounded-full bg-emerald-400/20 border border-emerald-400/50 text-emerald-300 font-semibold transition">
-              ✨ HD Crisp
+            <button type="button" onclick="toggleHdCrisp()" id="hd-crisp-btn" title="Toggle Crisp HD Contrast Enhancement" class="ml-1 px-2.5 py-1 rounded-full bg-emerald-400/20 border border-emerald-400/50 text-emerald-300 font-semibold transition">
+              ✨ Crisp HD
             </button>
           </div>
 
@@ -260,7 +213,7 @@
       </div>
 
       <!-- BOTTOM-LEFT: MINIMIZABLE STAGE TITLE HUD & LIVE FRAME TELEMETRY -->
-      <div id="stage-hud-card" class="absolute bottom-5 left-4 sm:left-8 z-30 max-w-lg bg-obsidian/75 backdrop-blur-xl border border-gold/30 border-l-4 border-l-gold p-4 sm:p-5 rounded-2xl text-alabaster shadow-2xl transition-all duration-300">
+      <div id="stage-hud-card" class="absolute bottom-5 left-4 sm:left-8 z-30 max-w-lg bg-obsidian/80 backdrop-blur-xl border border-gold/30 border-l-4 border-l-gold p-4 sm:p-5 rounded-2xl text-alabaster shadow-2xl transition-all duration-300">
         <!-- Top Header Row (Always Visible even when Minimized) -->
         <div class="flex items-center justify-between gap-4">
           <div class="flex flex-wrap items-center gap-2 font-mono text-[11px] text-gold uppercase tracking-widest">
@@ -296,7 +249,7 @@
               ⚡ 120-Frame 3D Engine Active (Click "Select Video Frames" or Drop Files)
             </p>
             <div class="flex items-center gap-1.5">
-              <button type="button" onclick="triggerFrameFilesPicker()" class="px-2.5 py-1 rounded bg-gold/20 hover:bg-gold text-gold hover:text-obsidian border border-gold/40 text-xs font-mono transition">+ Load Frames</button>
+              <label for="frame-files-input" onclick="document.getElementById('frame-files-input').value = ''" class="cursor-pointer px-2.5 py-1 rounded bg-gold/20 hover:bg-gold text-gold hover:text-obsidian border border-gold/40 text-xs font-mono transition">+ Load Frames</label>
               <button type="button" onclick="stepStage(-1)" class="px-2.5 py-1 rounded bg-white/10 hover:bg-gold hover:text-obsidian text-xs font-mono transition">← Prev</button>
               <button type="button" onclick="stepStage(1)" class="px-2.5 py-1 rounded bg-white/10 hover:bg-gold hover:text-obsidian text-xs font-mono transition">Next →</button>
             </div>
@@ -311,274 +264,7 @@
       </a>
     </div>
   </section>
-
-  <!-- =================================================================
-       PART 2: MONICA KHANNA STYLE EDITORIAL PORTFOLIO & TOOLS
-       ================================================================= -->
-  <div id="editorial-start"></div>
-
-  <header class="sticky top-0 z-50 bg-alabaster/95 backdrop-blur-md border-b border-charcoal/10">
-    <div class="max-w-7xl mx-auto px-4 md:px-8 py-4 flex flex-col items-center">
-      <a href="#editorial-start" class="font-serif text-3xl md:text-4xl tracking-[0.28em] text-charcoal font-semibold uppercase">DAGORIYA</a>
-      <p class="font-mono text-[10px] tracking-[0.3em] text-goldDark uppercase mt-0.5">Architecture • Interiors • Bespoke Curation</p>
-
-      <nav class="flex flex-wrap justify-center gap-4 md:gap-8 text-xs uppercase tracking-[0.18em] text-charcoal/80 mt-3.5 font-medium">
-        <a href="#hero-scroll-container" class="hover:text-goldDark transition">Home (Intro)</a>
-        <a href="#philosophy" class="hover:text-goldDark transition">Philosophy</a>
-        <a href="#before-after-section" class="hover:text-goldDark transition">Transformation</a>
-        <a href="#floorplan-section" class="hover:text-goldDark transition">Spatial Plan</a>
-        <a href="#portfolio-chapters" class="hover:text-goldDark transition">Portfolio</a>
-        <a href="#cost-estimator" class="hover:text-goldDark transition text-goldDark font-semibold">Cost Estimator</a>
-        <a href="#contact-footer" class="hover:text-goldDark transition">Contact</a>
-      </nav>
-    </div>
-
-    <!-- Secondary Quick-Jump Bar -->
-    <div class="bg-pearl/85 border-t border-charcoal/10 py-2 px-4">
-      <div class="max-w-5xl mx-auto flex flex-wrap justify-center items-center gap-3 md:gap-6 text-[11px] font-mono uppercase tracking-[0.18em] text-charcoal/75">
-        <a href="#sec-apartments" class="hover:text-goldDark transition">Apartments</a>
-        <span class="text-gold">|</span>
-        <a href="#sec-farmhouses" class="hover:text-goldDark transition">Farmhouses &amp; Villas</a>
-        <span class="text-gold">|</span>
-        <a href="#sec-offices" class="hover:text-goldDark transition">Office Interiors</a>
-        <span class="text-gold">|</span>
-        <a href="#sec-hospitality" class="hover:text-goldDark transition">Hospitality</a>
-      </div>
-    </div>
-  </header>
-
-  <section id="philosophy" class="py-24 px-6 md:px-12 max-w-7xl mx-auto text-center">
-    <p class="font-mono text-xs uppercase tracking-[0.3em] text-goldDark mb-4">The Dagoriya Ethos</p>
-    <blockquote class="font-serif italic text-3xl md:text-5xl text-charcoal max-w-4xl mx-auto leading-tight mb-6">
-      “Good design yearns for boundless style that is underlined by simplicity.”
-    </blockquote>
-    <div class="w-20 h-[1px] bg-gold mx-auto mb-6"></div>
-    <p class="max-w-2xl mx-auto text-charcoal/70 font-light leading-relaxed mb-16">
-      At <strong class="text-charcoal font-medium">DAGORIYA</strong>, every residence, private estate, and flagship hospitality space is conceived as an heirloom—uniting raw architectural honesty with tactile Italian stone, bespoke millwork, and dramatic illumination.
-    </p>
-
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-left">
-      <div class="group bg-white rounded-2xl border border-charcoal/10 overflow-hidden hover:border-gold transition duration-500 shadow-sm hover:shadow-xl">
-        <div class="h-60 overflow-hidden">
-          <img src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=900&q=80" alt="Residential Sanctuaries" class="w-full h-full object-cover group-hover:scale-105 transition duration-700" />
-        </div>
-        <div class="p-8">
-          <span class="font-mono text-xs text-goldDark">PILLAR 01</span>
-          <h3 class="font-serif text-3xl mt-1 mb-3 group-hover:text-goldDark transition">Residential Sanctuaries</h3>
-          <p class="text-sm text-charcoal/70 leading-relaxed mb-6">Turnkey bare-shell sky penthouses and sprawling country estates tailored to private collectors.</p>
-          <a href="#sec-apartments" class="font-mono text-xs uppercase tracking-widest text-charcoal border-b border-gold pb-1">Explore Residences →</a>
-        </div>
-      </div>
-
-      <div class="group bg-white rounded-2xl border border-charcoal/10 overflow-hidden hover:border-gold transition duration-500 shadow-sm hover:shadow-xl">
-        <div class="h-60 overflow-hidden">
-          <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=900&q=80" alt="Executive Office Interiors" class="w-full h-full object-cover group-hover:scale-105 transition duration-700" />
-        </div>
-        <div class="p-8">
-          <span class="font-mono text-xs text-goldDark">PILLAR 02</span>
-          <h3 class="font-serif text-3xl mt-1 mb-3 group-hover:text-goldDark transition">Executive Office Interiors</h3>
-          <p class="text-sm text-charcoal/70 leading-relaxed mb-6">Acoustic-grade private family offices, boardrooms, and headquarters crafted for quiet authority.</p>
-          <a href="#sec-offices" class="font-mono text-xs uppercase tracking-widest text-charcoal border-b border-gold pb-1">Explore Workspaces →</a>
-        </div>
-      </div>
-
-      <div class="group bg-white rounded-2xl border border-charcoal/10 overflow-hidden hover:border-gold transition duration-500 shadow-sm hover:shadow-xl">
-        <div class="h-60 overflow-hidden">
-          <img src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=900&q=80" alt="Bespoke Hospitality" class="w-full h-full object-cover group-hover:scale-105 transition duration-700" />
-        </div>
-        <div class="p-8">
-          <span class="font-mono text-xs text-goldDark">PILLAR 03</span>
-          <h3 class="font-serif text-3xl mt-1 mb-3 group-hover:text-goldDark transition">Bespoke Hospitality</h3>
-          <p class="text-sm text-charcoal/70 leading-relaxed mb-6">Boutique heritage resorts, private members' clubs, and Michelin-caliber dining environments.</p>
-          <a href="#sec-hospitality" class="font-mono text-xs uppercase tracking-widest text-charcoal border-b border-gold pb-1">Explore Hospitality →</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section id="before-after-section" class="py-20 bg-obsidian text-alabaster px-6 md:px-12">
-    <div class="max-w-6xl mx-auto">
-      <div class="flex flex-col md:flex-row md:items-end justify-between mb-10">
-        <div>
-          <p class="font-mono text-xs uppercase tracking-[0.3em] text-gold mb-2">Interactive Site Inspection</p>
-          <h2 class="font-serif text-4xl md:text-5xl">Bare-Shell vs. Handover Reality</h2>
-        </div>
-        <p class="text-sm text-alabaster/60 font-mono mt-2 md:mt-0">← Drag Center Gold Handle to Compare →</p>
-      </div>
-
-      <div id="ba-wrapper" class="relative w-full h-[380px] md:h-[520px] rounded-2xl overflow-hidden select-none border border-gold/30 cursor-ew-resize shadow-2xl">
-        <!-- AFTER IMAGE (Completed Handover) -->
-        <img src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1800&q=85"
-             alt="Completed Dagoriya Interior" class="absolute inset-0 w-full h-full object-cover pointer-events-none" />
-        <span class="absolute top-4 right-4 z-10 bg-obsidian/80 text-gold font-mono text-xs uppercase px-3.5 py-1.5 rounded-full border border-gold/40">
-          Stage 08 / Completed Handover
-        </span>
-
-        <!-- BEFORE IMAGE (Raw Shell Clipped) -->
-        <div id="ba-before-clip" class="absolute inset-y-0 left-0 w-1/2 overflow-hidden">
-          <img id="ba-before-img" src="https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1800&q=80"
-               alt="Raw Concrete Shell" class="h-full max-w-none object-cover filter grayscale contrast-125 brightness-75 pointer-events-none" />
-          <span class="absolute top-4 left-4 z-10 bg-obsidian/85 text-alabaster font-mono text-xs uppercase px-3.5 py-1.5 rounded-full border border-alabaster/30">
-            Stage 01 / Raw Civil Shell
-          </span>
-        </div>
-
-        <!-- DRAG HANDLE -->
-        <div id="ba-handle" class="absolute top-0 bottom-0 left-1/2 w-0.5 bg-gold z-20 pointer-events-none">
-          <div class="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-11 h-11 rounded-full bg-gold text-obsidian flex items-center justify-center font-mono text-xs font-bold shadow-xl border-2 border-obsidian">
-            ↔
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section id="floorplan-section" class="py-24 px-6 md:px-12 max-w-7xl mx-auto">
-    <div class="text-center mb-14">
-      <p class="font-mono text-xs uppercase tracking-[0.3em] text-goldDark mb-2">Interactive Spatial Blueprint</p>
-      <h2 class="font-serif text-4xl md:text-5xl">Explore The 8,500 Sq.Ft. Sky Villa Layout</h2>
-      <p class="text-sm text-charcoal/70 mt-2">Click on any pulsing gold node on the architectural plan to inspect room specifications.</p>
-    </div>
-
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-      <!-- SVG Blueprint Plan with 4 Clickable Pins -->
-      <div class="lg:col-span-7 relative bg-[#11161B] rounded-2xl border border-gold/40 p-6 md:p-10 text-alabaster shadow-xl">
-        <div class="flex justify-between font-mono text-[11px] text-gold/75 mb-3">
-          <span>DWG // DAGORIYA-SKYVILLA-01</span>
-          <span>SCALE 1:100 • NORTH ↑</span>
-        </div>
-        <div class="relative">
-          <svg viewBox="0 0 800 500" class="w-full h-auto bg-[#0B0F14] rounded-xl border border-gold/20">
-            <defs>
-              <pattern id="bpGrid" width="25" height="25" patternUnits="userSpaceOnUse">
-                <path d="M 25 0 L 0 0 0 25" fill="none" stroke="rgba(197,168,128,0.08)" stroke-width="1"/>
-              </pattern>
-            </defs>
-            <rect width="800" height="500" fill="url(#bpGrid)"/>
-            <rect x="30" y="30" width="740" height="440" fill="none" stroke="#C5A880" stroke-width="3" opacity="0.75"/>
-            <!-- Room Partitions -->
-            <line x1="340" y1="30" x2="340" y2="310" stroke="#C5A880" stroke-width="2" opacity="0.6"/>
-            <line x1="30" y1="310" x2="770" y2="310" stroke="#C5A880" stroke-width="2" opacity="0.6"/>
-            <line x1="560" y1="30" x2="560" y2="470" stroke="#C5A880" stroke-width="2" opacity="0.6"/>
-            <!-- Architectural Furniture Symbols -->
-            <rect x="90" y="95" width="180" height="120" rx="14" fill="none" stroke="#C5A880" stroke-width="1.5" stroke-dasharray="5 4" opacity="0.6"/>
-            <ellipse cx="450" cy="180" rx="55" ry="80" fill="none" stroke="#C5A880" stroke-width="1.5" opacity="0.6"/>
-            <rect x="600" y="95" width="130" height="145" fill="none" stroke="#C5A880" stroke-width="1.5" opacity="0.6"/>
-            <!-- Blueprint Labels -->
-            <g font-family="JetBrains Mono, monospace" font-size="11" fill="#C5A880" opacity="0.85">
-              <text x="95" y="75">01 // GRAND SALON</text>
-              <text x="370" y="75">02 // DINING &amp; WINE VAULT</text>
-              <text x="595" y="75">03 // PRIMARY SUITE</text>
-              <text x="190" y="405">04 // PRIVATE INFINITY SKY DECK</text>
-            </g>
-          </svg>
-
-          <!-- 4 Interactive Pins -->
-          <button type="button" onclick="selectFloorRoom(0)" class="fp-pin pin-pulse absolute top-[32%] left-[22%] w-9 h-9 rounded-full bg-gold text-obsidian font-mono text-xs font-bold flex items-center justify-center shadow-lg transition transform hover:scale-110">01</button>
-          <button type="button" onclick="selectFloorRoom(1)" class="fp-pin pin-pulse absolute top-[35%] left-[56%] w-9 h-9 rounded-full bg-obsidian text-gold border border-gold font-mono text-xs font-bold flex items-center justify-center shadow-lg transition transform hover:scale-110">02</button>
-          <button type="button" onclick="selectFloorRoom(2)" class="fp-pin pin-pulse absolute top-[34%] left-[78%] w-9 h-9 rounded-full bg-obsidian text-gold border border-gold font-mono text-xs font-bold flex items-center justify-center shadow-lg transition transform hover:scale-110">03</button>
-          <button type="button" onclick="selectFloorRoom(3)" class="fp-pin pin-pulse absolute top-[76%] left-[38%] w-9 h-9 rounded-full bg-obsidian text-gold border border-gold font-mono text-xs font-bold flex items-center justify-center shadow-lg transition transform hover:scale-110">04</button>
-        </div>
-      </div>
-
-      <!-- Selected Room Detail Card -->
-      <div class="lg:col-span-5 bg-white rounded-2xl border border-charcoal/15 p-6 md:p-8 shadow-lg">
-        <img id="fp-img" src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1000&q=80" class="w-full h-56 rounded-xl object-cover mb-5" alt="Room Preview" />
-        <div class="flex justify-between items-center font-mono text-xs text-goldDark mb-1">
-          <span id="fp-code">ZONE 01 // LIVING</span>
-          <span id="fp-area">2,400 SQ.FT.</span>
-        </div>
-        <h3 id="fp-title" class="font-serif text-3xl text-charcoal mb-2">The Double-Height Grand Salon</h3>
-        <p id="fp-desc" class="text-sm text-charcoal/70 leading-relaxed mb-5">
-          Bookmatched Italian Calacatta Gold flooring paired with acoustic fluted American walnut walls and a custom 4.2m curved bouclé sofa.
-        </p>
-        <div id="fp-materials" class="flex flex-wrap gap-2 font-mono text-[11px]"></div>
-      </div>
-    </div>
-  </section>
-
-  <div id="portfolio-chapters"></div>
-
-  <section id="cost-estimator" class="py-24 px-6 md:px-12 bg-obsidian text-alabaster">
-    <div class="max-w-5xl mx-auto rounded-3xl border border-gold/35 p-8 md:p-14 bg-[#121210] shadow-2xl">
-      <div class="text-center mb-10">
-        <p class="font-mono text-xs uppercase tracking-[0.3em] text-gold mb-2">Instant Turnkey BOQ Valuation</p>
-        <h2 class="font-serif text-4xl md:text-5xl">60-Second Dagoriya Cost Estimator</h2>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div>
-          <label class="block font-mono text-xs uppercase text-gold mb-2">1. Property Type</label>
-          <select id="est-type" onchange="updateEstimate()" class="w-full bg-obsidian border border-gold/40 rounded-xl px-4 py-3 text-sm text-alabaster focus:outline-none">
-            <option value="Sky Apartment / Penthouse">Sky Apartment / Penthouse</option>
-            <option value="Farmhouse / Luxury Villa">Farmhouse / Luxury Villa</option>
-            <option value="Executive Office / HQ">Executive Office / HQ</option>
-            <option value="Boutique Hospitality">Boutique Hospitality</option>
-          </select>
-        </div>
-
-        <div>
-          <label class="block font-mono text-xs uppercase text-gold mb-2">2. Specification Tier</label>
-          <select id="est-rate" onchange="updateEstimate()" class="w-full bg-obsidian border border-gold/40 rounded-xl px-4 py-3 text-sm text-alabaster focus:outline-none">
-            <option value="4500">Signature Luxury (₹4,500 / sq.ft)</option>
-            <option value="7500" selected>Bespoke Italian Couture (₹7,500 / sq.ft)</option>
-            <option value="12000">Ultra-Collector Edition (₹12,000 / sq.ft)</option>
-          </select>
-        </div>
-
-        <div>
-          <label class="block font-mono text-xs uppercase text-gold mb-2">
-            3. Carpet Area: <span id="est-area-label" class="text-alabaster">4,500 sq.ft</span>
-          </label>
-          <input type="range" id="est-area" min="1200" max="20000" step="100" value="4500" oninput="updateEstimate()" class="w-full accent-gold mt-3 cursor-pointer" />
-        </div>
-      </div>
-
-      <!-- Live Itemized BOQ Breakdown -->
-      <div class="border-t border-b border-gold/20 py-6 my-6 grid grid-cols-2 md:grid-cols-4 gap-4 text-center font-mono text-xs">
-        <div class="bg-obsidian/60 p-4 rounded-xl border border-white/5">
-          <span class="text-alabaster/50 block">CIVIL &amp; MARBLE (35%)</span>
-          <span id="boq-civil" class="text-gold text-base mt-1 block">₹1.18 Cr</span>
-        </div>
-        <div class="bg-obsidian/60 p-4 rounded-xl border border-white/5">
-          <span class="text-alabaster/50 block">MILLWORK &amp; BOISERIE (25%)</span>
-          <span id="boq-millwork" class="text-gold text-base mt-1 block">₹84.3 L</span>
-        </div>
-        <div class="bg-obsidian/60 p-4 rounded-xl border border-white/5">
-          <span class="text-alabaster/50 block">ITALIAN FURNITURE (25%)</span>
-          <span id="boq-furniture" class="text-gold text-base mt-1 block">₹84.3 L</span>
-        </div>
-        <div class="bg-obsidian/60 p-4 rounded-xl border border-white/5">
-          <span class="text-alabaster/50 block">LIGHTING &amp; DALI (15%)</span>
-          <span id="boq-lighting" class="text-gold text-base mt-1 block">₹50.6 L</span>
-        </div>
-      </div>
-
-      <div class="flex flex-col md:flex-row items-center justify-between gap-6">
-        <div>
-          <span class="font-mono text-xs uppercase tracking-widest text-alabaster/60">Estimated Turnkey Investment</span>
-          <div id="est-total" class="font-serif text-4xl md:text-5xl text-gold mt-1">₹3.38 Cr*</div>
-        </div>
-        <button type="button" onclick="sendWhatsAppEstimate()" class="w-full md:w-auto bg-gold hover:bg-alabaster text-obsidian font-mono text-xs uppercase tracking-[0.2em] font-semibold px-8 py-4 rounded-full transition shadow-lg">
-          Send BOQ Estimate to WhatsApp →
-        </button>
-      </div>
-    </div>
-  </section>
-
-  <!-- FOOTER & LIGHTBOX MODAL -->
-  <footer id="contact-footer" class="bg-obsidian text-alabaster border-t border-gold/20 py-16 px-6 md:px-12 text-center">
-    <h2 class="font-serif text-4xl tracking-[0.3em] uppercase mb-2">DAGORIYA</h2>
-    <p class="font-mono text-xs text-gold tracking-[0.25em] uppercase mb-6">New Delhi • Mumbai • Agra • Dubai • Milan</p>
-    <p class="text-xs text-alabaster/50 font-mono">© 2026 DAGORIYA ARCHITECTURE &amp; INTERIOR COUTURE. ALL RIGHTS RESERVED.</p>
-  </footer>
-
-  <!-- FULLSCREEN LIGHTBOX MODAL -->
-  <div id="lightbox" onclick="closeLightbox()" class="fixed inset-0 bg-obsidian/95 z-50 hidden items-center justify-center p-4 cursor-zoom-out">
-    <button type="button" onclick="closeLightbox()" class="absolute top-6 right-6 w-10 h-10 rounded-full bg-white/10 text-alabaster flex items-center justify-center text-lg">✕</button>
-    <img id="lightbox-img" src="" class="max-h-[88vh] max-w-[92vw] rounded-xl object-contain border border-gold/40 shadow-2xl" alt="Enlarged Portfolio View" />
-  </div>
-
+<!-- ... existing code ... -->
   <!-- =================================================================
        JAVASCRIPT: VIDEO FRAME SCRUBBER + PROCEDURAL 3D ROOM + UI LOGIC
        ================================================================= -->
@@ -604,14 +290,17 @@
     ];
 
     const canvas = document.getElementById('renovation-canvas');
-    const ctx = canvas.getElementById('renovation-canvas').getContext('2d', { alpha: false });
+    const ctx = canvas.getContext('2d');
     let userFrames = [];
     let currentScrollProgress = 0;
     let targetScrollProgress = 0;
 
-    // Smart Frame Fit & Zoom State (Default: 'contain' at 94% scale so 0% of the room or chandelier is cropped)
-    let frameFitMode = 'contain'; // 'contain' (Zero Crop) or 'cover' (Edge-to-Edge)
-    let frameZoomScale = 0.94;    // 0.75 to 1.25 adjustable live
+    // Anti-Overzoom & Fit State:
+    // 'contain' = Fit (No Crop, 100% of frame visible)
+    // 'balanced' = Smart hybrid fit (minimal edge crop so chandelier stays visible)
+    // 'cover' = Full edge-to-edge screen fill
+    let frameFitMode = 'contain';
+    let frameZoomScale = 1.0;
     let hdCrispEnabled = true;
     let cssWidth = window.innerWidth;
     let cssHeight = window.innerHeight;
@@ -637,26 +326,31 @@
       }
     }
     window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
 
-    // Live Frame Fit, Zoom & Optical HD Sharpness Controls
+    // Live Frame Fit, Zoom & Crisp HD Controls
     function setFrameFitMode(mode) {
       frameFitMode = mode;
-      frameZoomScale = mode === 'contain' ? 0.94 : 1.0;
+      if (mode === 'contain') frameZoomScale = 1.0;
+      if (mode === 'balanced') frameZoomScale = 0.94;
+      if (mode === 'cover') frameZoomScale = 1.0;
+
       document.getElementById('zoom-level-label').textContent = `${Math.round(frameZoomScale * 100)}%`;
 
-      const containBtn = document.getElementById('fit-contain-btn');
-      const coverBtn = document.getElementById('fit-cover-btn');
-      if (mode === 'contain') {
-        containBtn.className = "px-2.5 py-1 rounded-full bg-gold text-obsidian font-semibold transition";
-        coverBtn.className = "px-2.5 py-1 rounded-full text-alabaster/75 hover:text-gold transition";
-      } else {
-        coverBtn.className = "px-2.5 py-1 rounded-full bg-gold text-obsidian font-semibold transition";
-        containBtn.className = "px-2.5 py-1 rounded-full text-alabaster/75 hover:text-gold transition";
-      }
+      const modes = ['contain', 'balanced', 'cover'];
+      modes.forEach(m => {
+        const btn = document.getElementById(`fit-${m}-btn`);
+        if (!btn) return;
+        if (m === mode) {
+          btn.className = "px-2.5 py-1 rounded-full bg-gold text-obsidian font-semibold transition";
+        } else {
+          btn.className = "px-2.5 py-1 rounded-full text-alabaster/75 hover:text-gold transition";
+        }
+      });
     }
 
     function adjustFrameZoom(delta) {
-      frameZoomScale = Math.max(0.75, Math.min(1.25, +(frameZoomScale + delta).toFixed(2)));
+      frameZoomScale = Math.max(0.70, Math.min(1.25, +(frameZoomScale + delta).toFixed(2)));
       document.getElementById('zoom-level-label').textContent = `${Math.round(frameZoomScale * 100)}%`;
     }
 
@@ -666,7 +360,7 @@
       const btn = document.getElementById('hd-crisp-btn');
       if (hdCrispEnabled) {
         btn.className = "ml-1 px-2.5 py-1 rounded-full bg-emerald-400/20 border border-emerald-400/50 text-emerald-300 font-semibold transition";
-        btn.textContent = "✨ HD Crisp";
+        btn.textContent = "✨ Crisp HD";
       } else {
         btn.className = "ml-1 px-2.5 py-1 rounded-full bg-white/5 border border-white/20 text-alabaster/60 transition";
         btn.textContent = "HD Off";
@@ -700,97 +394,123 @@
       jumpToStage(currentStage + delta);
     }
 
-    // Bulletproof Explicit File & Folder Picker Triggers
+    // Batched Progressive Video Frame Loader (Loads Frame 1 in <30ms, then streams 486+ frames without browser freeze)
     let activeObjectURLs = [];
+    let currentLoadSessionId = 0;
 
-    function triggerFrameFilesPicker() {
-      const input = document.getElementById('frame-files-input');
-      if (input) {
-        input.value = ''; // Reset so re-selecting the exact same files always fires onchange
-        input.click();
-      }
-    }
-
-    function triggerFrameFolderPicker() {
-      const input = document.getElementById('frame-folder-input');
-      if (input) {
-        input.value = ''; // Reset so re-selecting the exact same folder always fires onchange
-        input.click();
-      }
-    }
-
-    // Progressive Instant Video Frame Loader (Never hangs on 486+ frames or Windows system files)
     function handleSelectedFiles(fileList) {
       if (!fileList || fileList.length === 0) return;
 
-      // Accept both standard image MIME types and common image extensions (ignores Thumbs.db / desktop.ini)
       const imageRegex = /\.(jpe?g|png|webp|avif|bmp|gif)$/i;
       const files = Array.from(fileList).filter(
         f => (f.type && f.type.startsWith('image/')) || imageRegex.test(f.name)
       );
 
       const badge = document.getElementById('frame-source-badge');
+      const topPill = document.getElementById('top-engine-pill');
+
       if (!files.length) {
         if (badge) {
-          badge.textContent = '⚠️ No valid image frames found in selection. Please select JPG/PNG/WebP frames.';
+          badge.textContent = '⚠️ No image files found. Please select JPG, PNG, or WebP video frames.';
           badge.className = 'font-mono text-[10px] text-amber-400 uppercase tracking-wider';
         }
         return;
       }
 
-      // Natural alphanumeric sort (e.g. frame_001.jpg, frame_002.jpg ... frame_486.jpg)
+      // Sort naturally by filename (e.g. frame_001.jpg ... frame_486.jpg)
       files.sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' }));
 
-      // Cleanup previous blob URLs to free memory
+      // Release previous Blob URLs
       if (activeObjectURLs.length > 0) {
         activeObjectURLs.forEach(url => URL.revokeObjectURL(url));
         activeObjectURLs = [];
       }
 
+      currentLoadSessionId++;
+      const sessionId = currentLoadSessionId;
+
       const total = files.length;
       const newFrames = new Array(total);
-      userFrames = newFrames; // Activate immediately so the canvas switches to video mode right away!
+      userFrames = newFrames;
+
+      // Default to 'contain' (Fit - No Crop) when user loads video frames so 0% is zoomed or cut off
+      setFrameFitMode('contain');
 
       let loadedCount = 0;
       let failedCount = 0;
+      let nextFileIndex = 0;
 
       if (badge) {
         badge.className = 'font-mono text-[10px] text-emerald-400 uppercase tracking-wider';
-        badge.textContent = `⏳ Streaming ${total} Video Frames (0 / ${total})...`;
+        badge.textContent = `⏳ Loading ${total} Video Frames (0 / ${total})...`;
       }
 
-      files.forEach((file, idx) => {
+      // Load in smooth concurrent workers (16 parallel image decoders) so Chrome never chokes on 486+ files
+      const CONCURRENCY = 16;
+
+      function loadNextFrame() {
+        if (sessionId !== currentLoadSessionId) return;
+        if (nextFileIndex >= total) return;
+
+        const idx = nextFileIndex++;
+        const file = files[idx];
         const img = new Image();
-        img.decoding = 'async';
         const objUrl = URL.createObjectURL(file);
         activeObjectURLs.push(objUrl);
 
         img.onload = () => {
+          if (sessionId !== currentLoadSessionId) return;
           newFrames[idx] = img;
           loadedCount++;
           const done = loadedCount + failedCount;
+
+          if (topPill) {
+            topPill.textContent = `Custom Video: ${loadedCount}/${total} Frames`;
+          }
 
           if (done === total) {
             if (badge) {
               badge.textContent = `✅ Custom Video Sequence Active (${loadedCount} Frames Ready — Scroll to Scrub!)`;
             }
-          } else if (loadedCount === 1 || loadedCount % 25 === 0) {
+          } else if (loadedCount === 1 || loadedCount % 20 === 0) {
             if (badge) {
-              badge.textContent = `⚡ Custom Video Active: Loaded ${loadedCount} / ${total} Frames...`;
+              badge.textContent = `⚡ Custom Video Active: ${loadedCount} / ${total} Frames Loaded...`;
             }
           }
+
+          loadNextFrame();
         };
 
         img.onerror = () => {
+          if (sessionId !== currentLoadSessionId) return;
           failedCount++;
           const done = loadedCount + failedCount;
           if (done === total && badge) {
             badge.textContent = `✅ Custom Video Sequence Active (${loadedCount} Frames Ready — Scroll to Scrub!)`;
           }
+          loadNextFrame();
         };
 
         img.src = objUrl;
-      });
+      }
+
+      // Prioritize current scroll frame + Frame 0 first so screen updates in <30ms
+      const initialTargetIdx = Math.min(total - 1, Math.floor(currentScrollProgress * total));
+      if (initialTargetIdx > 0 && files[initialTargetIdx]) {
+        const priorityImg = new Image();
+        const priorityUrl = URL.createObjectURL(files[initialTargetIdx]);
+        activeObjectURLs.push(priorityUrl);
+        priorityImg.onload = () => {
+          if (sessionId === currentLoadSessionId && !newFrames[initialTargetIdx]) {
+            newFrames[initialTargetIdx] = priorityImg;
+          }
+        };
+        priorityImg.src = priorityUrl;
+      }
+
+      for (let w = 0; w < Math.min(CONCURRENCY, total); w++) {
+        loadNextFrame();
+      }
     }
 
     document.getElementById('frame-files-input').addEventListener('change', function (e) {
@@ -802,7 +522,6 @@
     });
 
     // Support Drag & Drop of video frames directly onto the Hero section
-    const heroContainer = document.getElementById('hero-scroll-container');
     const dropOverlay = document.getElementById('drop-zone-overlay');
 
     window.addEventListener('dragover', e => {
@@ -831,13 +550,12 @@
       }
     });
 
-    // Helper: Find nearest loaded frame so scrubbing works even while 486 frames are still streaming in
+    // Find nearest decoded frame so scrubbing works smoothly even while 486 frames are still loading
     function getBestAvailableFrame(targetIdx) {
       if (!userFrames || userFrames.length === 0) return null;
       const direct = userFrames[targetIdx];
       if (direct && direct.complete && direct.naturalWidth > 0) return direct;
 
-      // Search outward for the closest decoded frame
       const len = userFrames.length;
       for (let offset = 1; offset < len; offset++) {
         const prev = targetIdx - offset;
@@ -858,23 +576,27 @@
       const imgRatio = img.naturalWidth / img.naturalHeight;
       const winRatio = w / h;
 
-      // 1. Draw Ambient Darkened Edge Fill (So there are never harsh black bars around uncropped frames)
+      // 1. Subtle Obsidian-Tinted Ambient Backdrop (fills any pillarbox/letterbox space without harsh black bars)
+      ctx.fillStyle = '#0B0B0A';
+      ctx.fillRect(0, 0, w, h);
+
       ctx.save();
       let bgW, bgH;
       if (winRatio > imgRatio) {
-        bgW = w * 1.06;
-        bgH = bgW / imgRatio;
+        bgW = w;
+        bgH = w / imgRatio;
       } else {
-        bgH = h * 1.06;
-        bgW = bgH * imgRatio;
+        bgH = h;
+        bgW = h * imgRatio;
       }
-      ctx.filter = 'blur(24px) brightness(0.32)';
+      ctx.globalAlpha = 0.28;
       ctx.drawImage(img, (w - bgW) / 2, (h - bgH) / 2, bgW, bgH);
       ctx.restore();
 
-      // 2. Calculate Sharp Foreground Frame Dimensions based on 'contain' (Zero Crop) or 'cover'
+      // 2. Calculate Foreground Frame Dimensions according to Fit Mode
       let baseW, baseH;
       if (frameFitMode === 'contain') {
+        // 100% Zero-Crop Fit
         if (winRatio > imgRatio) {
           baseH = h;
           baseW = h * imgRatio;
@@ -882,7 +604,14 @@
           baseW = w;
           baseH = w / imgRatio;
         }
+      } else if (frameFitMode === 'balanced') {
+        // Hybrid Cinema Fit: halfway between contain and cover so chandelier is never cut off
+        const containH = winRatio > imgRatio ? h : w / imgRatio;
+        const coverH = winRatio > imgRatio ? w / imgRatio : h;
+        baseH = containH * 0.65 + coverH * 0.35;
+        baseW = baseH * imgRatio;
       } else {
+        // Full Edge-to-Edge Cover
         if (winRatio > imgRatio) {
           baseW = w;
           baseH = w / imgRatio;
@@ -892,529 +621,23 @@
         }
       }
 
-      // Apply Live User Zoom Scale (Default 94% so top navbar never cuts off chandelier)
       const drawW = Math.round(baseW * frameZoomScale);
       const drawH = Math.round(baseH * frameZoomScale);
       const offsetX = Math.round((w - drawW) / 2);
-      // Slight downward offset (+14px) when scaled < 100% so frame clears the top navbar cleanly
-      const topClearance = frameZoomScale < 0.98 ? 14 : 0;
-      const offsetY = Math.round((h - drawH) / 2 + topClearance);
+      const offsetY = Math.round((h - drawH) / 2);
 
       ctx.imageSmoothingEnabled = true;
       ctx.imageSmoothingQuality = 'high';
       ctx.drawImage(img, offsetX, offsetY, drawW, drawH);
     }
-
-    function drawProceduralRoom(progress, w, h) {
-      const p = Math.max(0, Math.min(1, progress));
-      const stageFloat = p * 8;
-      const s1 = Math.min(1, Math.max(0, stageFloat));
-      const s2 = Math.min(1, Math.max(0, stageFloat - 1));
-      const s3 = Math.min(1, Math.max(0, stageFloat - 2));
-      const s4 = Math.min(1, Math.max(0, stageFloat - 3));
-      const s5 = Math.min(1, Math.max(0, stageFloat - 4));
-      const s6 = Math.min(1, Math.max(0, stageFloat - 5));
-      const s7 = Math.min(1, Math.max(0, stageFloat - 6));
-      const s8 = Math.min(1, Math.max(0, stageFloat - 7));
-
-      ctx.clearRect(0, 0, w, h);
-
-      const bx1 = w * 0.18, by1 = h * 0.16, bx2 = w * 0.82, by2 = h * 0.74;
-
-      // STAGE 1 & 2: Raw Concrete & Brick Shell -> Smooth Warm Alabaster Walls
-      ctx.fillStyle = s2 > 0 ? `rgb(${32 + s2 * 198}, ${30 + s2 * 190}, ${28 + s2 * 176})` : '#1F1D1B';
-      ctx.fillRect(0, 0, w, h);
-
-      // Back Wall
-      ctx.fillStyle = s2 > 0 ? `rgb(${40 + s2 * 195}, ${37 + s2 * 188}, ${34 + s2 * 174})` : '#282522';
-      ctx.fillRect(bx1, by1, bx2 - bx1, by2 - by1);
-
-      // Perspective Wall Corner Lines
-      ctx.strokeStyle = s2 > 0 ? 'rgba(120,110,95,0.35)' : 'rgba(197,168,128,0.3)';
-      ctx.lineWidth = 1.5;
-      ctx.beginPath();
-      ctx.moveTo(0, 0); ctx.lineTo(bx1, by1);
-      ctx.moveTo(w, 0); ctx.lineTo(bx2, by1);
-      ctx.moveTo(0, h); ctx.lineTo(bx1, by2);
-      ctx.moveTo(w, h); ctx.lineTo(bx2, by2);
-      ctx.stroke();
-
-      // Raw CAD Grid & Moving Laser Line during Stage 1
-      if (s2 < 1) {
-        ctx.save();
-        ctx.globalAlpha = 1 - s2 * 0.9;
-        ctx.strokeStyle = 'rgba(197, 168, 128, 0.22)';
-        ctx.lineWidth = 1;
-        for (let x = bx1; x <= bx2; x += 64) {
-          ctx.beginPath(); ctx.moveTo(x, by1); ctx.lineTo(x, by2); ctx.stroke();
-        }
-        for (let y = by1; y <= by2; y += 48) {
-          ctx.beginPath(); ctx.moveTo(bx1, y); ctx.lineTo(bx2, y); ctx.stroke();
-        }
-        const scanY = by1 + (s1 % 1) * (by2 - by1);
-        ctx.strokeStyle = '#C5A880';
-        ctx.lineWidth = 2;
-        ctx.beginPath(); ctx.moveTo(bx1 - 40, scanY); ctx.lineTo(bx2 + 40, scanY); ctx.stroke();
-        ctx.restore();
-      }
-
-      // STAGE 3: Recessed Gypsum Coffered Ceiling
-      ctx.fillStyle = s3 > 0 ? `rgb(${26 + s3 * 214}, ${24 + s3 * 207}, ${22 + s3 * 194})` : '#171614';
-      ctx.beginPath();
-      ctx.moveTo(0, 0); ctx.lineTo(w, 0); ctx.lineTo(bx2, by1); ctx.lineTo(bx1, by1);
-      ctx.closePath();
-      ctx.fill();
-
-      if (s3 > 0.05) {
-        ctx.save();
-        ctx.globalAlpha = s3;
-        ctx.fillStyle = '#DFD8CA';
-        ctx.fillRect(w * 0.24, h * 0.035, w * 0.52, h * 0.09);
-        ctx.strokeStyle = '#C5A880';
-        ctx.lineWidth = 2;
-        ctx.strokeRect(w * 0.24, h * 0.035, w * 0.52, h * 0.09);
-        ctx.restore();
-      }
-
-      // STAGE 4: Bespoke Herringbone Hardwood & Calacatta Marble Border Flooring
-      ctx.fillStyle = s4 > 0 ? `rgb(${36 + s4 * 104}, ${34 + s4 * 70}, ${30 + s4 * 38})` : '#22201D';
-      ctx.beginPath();
-      ctx.moveTo(bx1, by2); ctx.lineTo(bx2, by2); ctx.lineTo(w, h); ctx.lineTo(0, h);
-      ctx.closePath();
-      ctx.fill();
-
-      if (s4 > 0.05) {
-        ctx.save();
-        ctx.globalAlpha = s4;
-        ctx.strokeStyle = 'rgba(55, 34, 16, 0.3)';
-        ctx.lineWidth = 1.5;
-        for (let i = -5; i <= 5; i++) {
-          ctx.beginPath();
-          ctx.moveTo(w / 2 + i * 70, by2);
-          ctx.lineTo(w / 2 + i * 145, h);
-          ctx.stroke();
-        }
-        ctx.strokeStyle = '#C5A880';
-        ctx.lineWidth = 3;
-        ctx.beginPath();
-        ctx.moveTo(bx1 + 20, by2 + 16);
-        ctx.lineTo(bx2 - 20, by2 + 16);
-        ctx.lineTo(w - 70, h - 22);
-        ctx.lineTo(70, h - 22);
-        ctx.closePath();
-        ctx.stroke();
-        ctx.restore();
-      }
-
-      // STAGE 5: Custom Fluted Walnut Millwork, Boiserie & Floor-to-Ceiling Drapery
-      if (s5 > 0.01) {
-        ctx.save();
-        ctx.globalAlpha = s5;
-        const panelW = (bx2 - bx1) * 0.16;
-        ctx.fillStyle = '#422D1D';
-        ctx.fillRect(bx1 + 18, by1, panelW, by2 - by1);
-        for (let lx = bx1 + 24; lx < bx1 + 18 + panelW; lx += 9) {
-          ctx.fillStyle = '#27190E';
-          ctx.fillRect(lx, by1, 4, by2 - by1);
-        }
-        // Center Wall Boiserie Molding Frame
-        ctx.strokeStyle = '#BFB5A4';
-        ctx.lineWidth = 2;
-        ctx.strokeRect(w * 0.33, by1 + 24, w * 0.34, (by2 - by1) * 0.68);
-        // Right Sheer Belgian Linen Drapery
-        ctx.fillStyle = 'rgba(250, 247, 240, 0.88)';
-        ctx.fillRect(bx2 - panelW, by1, panelW, by2 - by1);
-        ctx.restore();
-      }
-
-      // STAGE 6: Curated Luxury Furniture (Bouclé Sofa, Lounge Chair & Marble Table)
-      if (s6 > 0.01) {
-        ctx.save();
-        ctx.globalAlpha = s6;
-        const sofaW = (bx2 - bx1) * 0.54;
-        const sofaX = (w - sofaW) / 2;
-        const sofaY = by2 - h * 0.095;
-
-        // Floor Contact Shadow
-        ctx.fillStyle = 'rgba(0,0,0,0.35)';
-        ctx.fillRect(sofaX - 12, sofaY + h * 0.1, sofaW + 24, h * 0.028);
-
-        // Curved Ivory Bouclé Sofa
-        ctx.fillStyle = '#F2EDE4';
-        ctx.beginPath();
-        ctx.roundRect(sofaX, sofaY, sofaW, h * 0.11, 26);
-        ctx.fill();
-        ctx.fillStyle = '#C5A880';
-        ctx.fillRect(sofaX + 12, sofaY + h * 0.105, sofaW - 24, 5);
-
-        // Cognac Accent Lounge Chair
-        ctx.fillStyle = '#8B4F2B';
-        ctx.beginPath();
-        ctx.roundRect(bx1 + 40, by2 - h * 0.04, w * 0.09, h * 0.085, 18);
-        ctx.fill();
-
-        // Roman Travertine Coffee Table
-        ctx.fillStyle = '#E2DACB';
-        ctx.beginPath();
-        ctx.roundRect(w * 0.38, by2 + h * 0.055, w * 0.24, h * 0.055, 12);
-        ctx.fill();
-        ctx.strokeStyle = '#C5A880';
-        ctx.lineWidth = 2;
-        ctx.stroke();
-        ctx.restore();
-      }
-
-      // STAGE 7: Art, Silk Area Rug & Mediterranean Olive Tree
-      if (s7 > 0.01) {
-        ctx.save();
-        ctx.globalAlpha = s7;
-        const artW = (bx2 - bx1) * 0.32, artH = (by2 - by1) * 0.48;
-        const artX = (w - artW) / 2, artY = by1 + (by2 - by1) * 0.12;
-        ctx.fillStyle = '#181715';
-        ctx.fillRect(artX, artY, artW, artH);
-        ctx.strokeStyle = '#C5A880';
-        ctx.lineWidth = 3.5;
-        ctx.strokeRect(artX, artY, artW, artH);
-        ctx.beginPath();
-        ctx.arc(artX + artW * 0.5, artY + artH * 0.5, artH * 0.28, 0, Math.PI * 2);
-        ctx.stroke();
-
-        // Indoor Olive Tree
-        ctx.fillStyle = '#D5CCB9';
-        ctx.fillRect(bx2 - 105, by2 - 65, 46, 65);
-        ctx.fillStyle = '#5B6B55';
-        ctx.beginPath();
-        ctx.arc(bx2 - 82, by2 - 125, 46, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.restore();
-      }
-
-      // STAGE 8: Warm Chandelier & 2700K Cove LED Illumination
-      if (s8 > 0.01) {
-        ctx.save();
-        ctx.globalAlpha = s8;
-        const grad = ctx.createRadialGradient(w / 2, h * 0.24, 15, w / 2, h * 0.38, w * 0.55);
-        grad.addColorStop(0, 'rgba(255, 222, 160, 0.58)');
-        grad.addColorStop(0.5, 'rgba(197, 168, 128, 0.2)');
-        grad.addColorStop(1, 'rgba(0,0,0,0)');
-        ctx.fillStyle = grad;
-        ctx.fillRect(0, 0, w, h);
-
-        // Chandelier Suspension & Glowing Alabaster Orbs
-        ctx.strokeStyle = '#C5A880';
-        ctx.lineWidth = 2.5;
-        ctx.beginPath();
-        ctx.moveTo(w / 2, h * 0.035);
-        ctx.lineTo(w / 2, h * 0.22);
-        ctx.stroke();
-
-        [-75, -38, 0, 38, 75].forEach((dx, i) => {
-          ctx.fillStyle = '#FFF7E8';
-          ctx.beginPath();
-          ctx.arc(w / 2 + dx, h * 0.21 + (i % 2) * 14, 13, 0, Math.PI * 2);
-          ctx.fill();
-        });
-        ctx.restore();
-      }
-    }
-
-    window.addEventListener('scroll', () => {
-      const container = document.getElementById('hero-scroll-container');
-      const rect = container.getBoundingClientRect();
-      const totalScrollable = container.offsetHeight - window.innerHeight;
-      const scrolled = -rect.top;
-      targetScrollProgress = Math.max(0, Math.min(1, scrolled / Math.max(1, totalScrollable)));
-    }, { passive: true });
-
-    function renderLoop() {
-      currentScrollProgress += (targetScrollProgress - currentScrollProgress) * 0.14;
-
-      const totalFrames = userFrames.length > 0 ? userFrames.length : 120;
-      const frameIdx = Math.min(totalFrames - 1, Math.floor(currentScrollProgress * totalFrames));
-      const stageIdx = Math.min(7, Math.floor(currentScrollProgress * 8));
-
-      const activeFrameImg = userFrames.length > 0 ? getBestAvailableFrame(frameIdx) : null;
-      if (activeFrameImg) {
-        ctx.clearRect(0, 0, cssWidth, cssHeight);
-        drawSmartVideoFrame(ctx, activeFrameImg, cssWidth, cssHeight);
-      } else {
-        drawProceduralRoom(currentScrollProgress, cssWidth, cssHeight);
-      }
-
-      const st = STAGES[stageIdx];
-      document.getElementById('hud-stage-num').textContent = `STAGE ${st.num} / 08`;
-      document.getElementById('hud-frame-counter').textContent =
-        `FRAME ${String(frameIdx + 1).padStart(3, '0')} / ${String(totalFrames).padStart(3, '0')}`;
-      document.getElementById('hud-scroll-pct').textContent = `${Math.round(currentScrollProgress * 100)}%`;
-      document.getElementById('hud-stage-title').textContent = st.title;
-      document.getElementById('hud-stage-desc').textContent = st.desc;
-
-      STAGES.forEach((_, idx) => {
-        const bar = document.getElementById(`step-bar-${idx}`);
-        const lbl = document.getElementById(`step-label-${idx}`);
-        if (idx === stageIdx) {
-          bar.className = "w-10 h-1.5 rounded-full bg-gold transition-all duration-300";
-          lbl.className = "font-mono text-xs font-bold tracking-widest text-gold";
-        } else if (idx < stageIdx) {
-          bar.className = "w-6 h-1 rounded-full bg-gold/60 transition-all duration-300";
-          lbl.className = "font-mono text-[11px] tracking-widest text-gold/70";
-        } else {
-          bar.className = "w-4 h-1 rounded-full bg-alabaster/20 transition-all duration-300";
-          lbl.className = "font-mono text-[11px] tracking-widest text-alabaster/40";
-        }
-      });
-
-      const reveal = document.getElementById('final-reveal-overlay');
-      if (currentScrollProgress >= 0.875) {
-        reveal.classList.remove('opacity-0', 'translate-y-6', 'pointer-events-none');
-        reveal.classList.add('opacity-100', 'translate-y-0');
-      } else {
-        reveal.classList.add('opacity-0', 'translate-y-6', 'pointer-events-none');
-        reveal.classList.remove('opacity-100', 'translate-y-0');
-      }
-
-      requestAnimationFrame(renderLoop);
-    }
-
-    function setLighting(mode) {
-      canvas.classList.remove('mode-day', 'mode-golden', 'mode-night');
-      canvas.classList.add(`mode-${mode}`);
-      ['day', 'golden', 'night'].forEach(m => {
-        const b = document.getElementById(`light-${m}`);
-        if (b) {
-          b.className = m === mode
-            ? "px-2.5 py-1 rounded-full bg-gold text-obsidian font-medium transition"
-            : "px-2.5 py-1 rounded-full text-alabaster/75 hover:text-gold transition";
-        }
-      });
-    }
-
-    function toggleXray() {
-      document.body.classList.toggle('xray-on');
-      const btn = document.getElementById('xray-btn');
-      btn.classList.toggle('bg-teal-400');
-      btn.classList.toggle('text-obsidian');
-    }
-
-    window.addEventListener('mousemove', e => {
-      document.documentElement.style.setProperty('--cx', `${e.clientX}px`);
-      document.documentElement.style.setProperty('--cy', `${e.clientY}px`);
-    });
-
-    // Interactive Before/After Slider
-    const baWrapper = document.getElementById('ba-wrapper');
-    const baClip = document.getElementById('ba-before-clip');
-    const baHandle = document.getElementById('ba-handle');
-    let baDragging = false;
-
-    function moveBeforeAfter(clientX) {
-      const rect = baWrapper.getBoundingClientRect();
-      const pct = Math.max(5, Math.min(95, ((clientX - rect.left) / rect.width) * 100));
-      baClip.style.width = `${pct}%`;
-      baHandle.style.left = `${pct}%`;
-    }
-    baWrapper.addEventListener('mousedown', () => { baDragging = true; });
-    window.addEventListener('mouseup', () => { baDragging = false; });
-    baWrapper.addEventListener('mousemove', e => { if (baDragging) moveBeforeAfter(e.clientX); });
-    baWrapper.addEventListener('touchmove', e => moveBeforeAfter(e.touches[0].clientX), { passive: true });
-    baWrapper.addEventListener('click', e => moveBeforeAfter(e.clientX));
-
-    // Floorplan Explorer Data
-    const FLOOR_ROOMS = [
-      {
-        code: "ZONE 01 // LIVING", area: "2,400 SQ.FT.", title: "The Double-Height Grand Salon",
-        desc: "Bookmatched Italian Calacatta Gold flooring paired with acoustic fluted American walnut walls and a custom 4.2m curved bouclé sofa.",
-        img: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1000&q=80",
-        mats: ["Calacatta Marble", "Fluted Walnut", "Loro Piana Bouclé"]
-      },
-      {
-        code: "ZONE 02 // GASTRONOMY", area: "1,450 SQ.FT.", title: "Onyx Formal Dining & Wine Vault",
-        desc: "Backlit honey onyx bar counter, temperature-controlled 600-bottle glass wine vault, and a 14-seater monolithic travertine dining table.",
-        img: "https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=1000&q=80",
-        mats: ["Backlit Honey Onyx", "Smoked Bronze Glass", "Brushed Brass"]
-      },
-      {
-        code: "ZONE 03 // SANCTUARY", area: "2,100 SQ.FT.", title: "Primary Presidential Suite & Spa Bath",
-        desc: "Suede-upholstered acoustic headboard wall, walk-in Poliform couture dressing gallery, and a monolithic carved stone soaking tub.",
-        img: "https://images.unsplash.com/photo-1616594039964-ae9021a400a0?auto=format&fit=crop&w=1000&q=80",
-        mats: ["Belgian Suede", "Smoked Eucalyptus", "Nero Marquina Stone"]
-      },
-      {
-        code: "ZONE 04 // OUTDOOR", area: "2,550 SQ.FT.", title: "Cantilevered Infinity Sky Deck",
-        desc: "Weatherproof Italian teak lounging pavilions, sunken bio-ethanol fire pit, and mature Mediterranean olive trees overlooking the skyline.",
-        img: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1000&q=80",
-        mats: ["Burmese Teak", "Flamed Basalt", "Cortén Steel"]
-      }
-    ];
-
-    function selectFloorRoom(idx) {
-      const r = FLOOR_ROOMS[idx];
-      document.getElementById('fp-code').textContent = r.code;
-      document.getElementById('fp-area').textContent = r.area;
-      document.getElementById('fp-title').textContent = r.title;
-      document.getElementById('fp-desc').textContent = r.desc;
-      document.getElementById('fp-img').src = r.img;
-      document.getElementById('fp-materials').innerHTML = r.mats
-        .map(m => `<span class="bg-pearl px-3 py-1 rounded-full border border-gold/40">${m}</span>`).join('');
-    }
-
-    const CHAPTERS = [
-      {
-        id: "sec-apartments",
-        title: "APARTMENTS & SKY PENTHOUSES",
-        tagline: "“Elevated sanctuaries suspended above the metropolitan horizon.”",
-        desc: "Bare-shell high-rise residences transformed into serene collector galleries with private elevator lobbies, acoustic wall cladding, and custom Italian furniture.",
-        banner: "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1920&q=85",
-        gallery: [
-          "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=900&q=80",
-          "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=900&q=80",
-          "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=900&q=80"
-        ]
-      },
-      {
-        id: "sec-farmhouses",
-        title: "FARMHOUSES & PRIVATE VILLAS",
-        tagline: "“Sprawling architectural estates where raw limestone meets manicured nature.”",
-        desc: "Resort-scale private estates featuring double-height colonnades, indoor-outdoor courtyard pavilions, and bespoke handcrafted stone detailing.",
-        banner: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1920&q=85",
-        gallery: [
-          "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=900&q=80",
-          "https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=900&q=80",
-          "https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&fit=crop&w=900&q=80"
-        ]
-      },
-      {
-        id: "sec-offices",
-        title: "EXECUTIVE OFFICE INTERIORS",
-        tagline: "“Architectural workplaces engineered for quiet power and timeless prestige.”",
-        desc: "Private family offices, C-suite penthouses, and flagship headquarters blending museum-grade art curation with seamless boardroom telemetry.",
-        banner: "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1920&q=85",
-        gallery: [
-          "https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=900&q=80",
-          "https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&w=900&q=80",
-          "https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&w=900&q=80"
-        ]
-      },
-      {
-        id: "sec-hospitality",
-        title: "BESPOKE HOSPITALITY & CLUBS",
-        tagline: "“Theatrical spatial narratives crafted for unforgettable guest immersion.”",
-        desc: "Boutique heritage palaces, luxury wellness retreats, and fine-dining destinations choreographed with dramatic lighting and tactile materiality.",
-        banner: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1920&q=85",
-        gallery: [
-          "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=900&q=80",
-          "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=900&q=80",
-          "https://images.unsplash.com/photo-1578683010236-d716f9a3f461?auto=format&fit=crop&w=900&q=80"
-        ]
-      }
-    ];
-
-    document.getElementById('portfolio-chapters').innerHTML = CHAPTERS.map(ch => `
-      <section id="${ch.id}" class="mb-20 scroll-mt-28">
-        <div class="parallax-bg h-[55vh] md:h-[65vh] relative flex items-center justify-center text-center px-6"
-             style="background-image: url('${ch.banner}');">
-          <div class="absolute inset-0 bg-obsidian/55"></div>
-          <div class="relative z-10 border border-gold/50 bg-obsidian/65 backdrop-blur-md px-8 md:px-16 py-8 rounded-2xl">
-            <p class="font-mono text-xs text-gold uppercase tracking-[0.3em] mb-2">DAGORIYA PORTFOLIO</p>
-            <h2 class="font-serif text-3xl md:text-6xl text-alabaster tracking-[0.15em] uppercase">${ch.title}</h2>
-          </div>
-        </div>
-
-        <div class="max-w-7xl mx-auto px-6 md:px-12 py-16 text-center">
-          <p class="font-serif italic text-2xl md:text-4xl text-goldDark mb-4">${ch.tagline}</p>
-          <p class="max-w-3xl mx-auto text-sm md:text-base text-charcoal/75 font-light leading-relaxed mb-12">${ch.desc}</p>
-
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            ${ch.gallery.map(img => `
-              <div onclick="openLightbox('${img}')" class="group rounded-2xl overflow-hidden border border-charcoal/10 cursor-zoom-in relative h-80 shadow-sm hover:shadow-xl transition">
-                <img src="${img}" class="w-full h-full object-cover group-hover:scale-110 transition duration-700" alt="${ch.title}" />
-                <div class="absolute inset-0 bg-obsidian/0 group-hover:bg-obsidian/40 transition flex items-end p-5">
-                  <span class="opacity-0 group-hover:opacity-100 text-alabaster font-mono text-xs uppercase tracking-widest transition">
-                    + Inspect Full Screen
-                  </span>
-                </div>
-              </div>
-            `).join('')}
-          </div>
-        </div>
-      </section>
-    `).join('');
-
-    function openLightbox(src) {
-      const lb = document.getElementById('lightbox');
-      document.getElementById('lightbox-img').src = src;
-      lb.classList.remove('hidden');
-      lb.classList.add('flex');
-    }
-
-    function closeLightbox() {
-      const lb = document.getElementById('lightbox');
-      lb.classList.add('hidden');
-      lb.classList.remove('flex');
-    }
-
-    function formatINR(val) {
-      if (val >= 10000000) return `₹${(val / 10000000).toFixed(2)} Cr`;
-      return `₹${(val / 100000).toFixed(1)} L`;
-    }
-
-    function updateEstimate() {
-      const rate = parseInt(document.getElementById('est-rate').value, 10);
-      const area = parseInt(document.getElementById('est-area').value, 10);
-      document.getElementById('est-area-label').textContent = `${area.toLocaleString()} sq.ft`;
-
-      const total = rate * area;
-      document.getElementById('est-total').textContent = `${formatINR(total)}*`;
-      document.getElementById('boq-civil').textContent = formatINR(total * 0.35);
-      document.getElementById('boq-millwork').textContent = formatINR(total * 0.25);
-      document.getElementById('boq-furniture').textContent = formatINR(total * 0.25);
-      document.getElementById('boq-lighting').textContent = formatINR(total * 0.15);
-    }
-
-    function sendWhatsAppEstimate() {
-      const type = document.getElementById('est-type').value;
-      const area = document.getElementById('est-area').value;
-      const total = document.getElementById('est-total').textContent;
-      const text = encodeURIComponent(
-        `Hello DAGORIYA Studio,\n\nI generated a turnkey interior BOQ estimate on your website:\n• Property: ${type}\n• Carpet Area: ${area} sq.ft\n• Estimated Turnkey Budget: ${total}\n\nPlease schedule a private design consultation.`
-      );
-      window.open(`https://wa.me/?text=${text}`, '_blank');
-    }
-
-    let isHudMinimized = false;
-
-    function toggleHudMinimize(forceState) {
-      isHudMinimized = typeof forceState === 'boolean' ? forceState : !isHudMinimized;
-      const card = document.getElementById('stage-hud-card');
-      const body = document.getElementById('hud-collapsible-body');
-      const label = document.getElementById('hud-toggle-label');
-      const frameCounter = document.getElementById('hud-frame-counter');
-      const frameDot = document.getElementById('hud-frame-dot');
-
-      if (isHudMinimized) {
-        body.classList.remove('max-h-64', 'opacity-100', 'mt-2');
-        body.classList.add('max-h-0', 'opacity-0', 'mt-0', 'pointer-events-none');
-        card.classList.remove('p-4', 'sm:p-5', 'rounded-2xl');
-        card.classList.add('py-2.5', 'px-4', 'rounded-full');
-        frameCounter.classList.add('hidden');
-        frameDot.classList.add('hidden');
-        label.textContent = '+ Expand HUD';
-      } else {
-        body.classList.remove('max-h-0', 'opacity-0', 'mt-0', 'pointer-events-none');
-        body.classList.add('max-h-64', 'opacity-100', 'mt-2');
-        card.classList.remove('py-2.5', 'px-4', 'rounded-full');
-        card.classList.add('p-4', 'sm:p-5', 'rounded-2xl');
-        frameCounter.classList.remove('hidden');
-        frameDot.classList.remove('hidden');
-        label.textContent = '— Minimize';
-      }
-    }
+<!-- ... existing code ... -->
+    // Start the animation loop immediately AND on window.onload so the canvas is never blank
+    selectFloorRoom(0);
+    updateEstimate();
+    requestAnimationFrame(renderLoop);
 
     window.onload = function () {
       resizeCanvas();
-      selectFloorRoom(0);
-      updateEstimate();
-      requestAnimationFrame(renderLoop);
     };
   </script>
 </body>
