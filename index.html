@@ -63,6 +63,16 @@
     .mode-night {
       filter: brightness(0.68) contrast(1.18) hue-rotate(-10deg) saturate(0.88);
     }
+    /* Optical HD Sharpness Enhancement for Extracted Video Frames */
+    .hd-crisp-active.mode-day {
+      filter: url(#hd-sharpen) brightness(1.02) contrast(1.06) saturate(1.04);
+    }
+    .hd-crisp-active.mode-golden {
+      filter: url(#hd-sharpen) brightness(0.96) contrast(1.1) sepia(0.22) saturate(1.28);
+    }
+    .hd-crisp-active.mode-night {
+      filter: url(#hd-sharpen) brightness(0.7) contrast(1.2) hue-rotate(-10deg) saturate(0.9);
+    }
     /* X-Ray CAD Blueprint Circular Lens */
     #xray-layer {
       pointer-events: none;
@@ -98,13 +108,31 @@
 <body class="selection:bg-gold selection:text-obsidian antialiased">
 
   <!-- =================================================================
+       OPTICAL HD SHARPNESS SVG CONVOLUTION FILTER (FOR RAZOR-SHARP FRAMES)
+       ================================================================= -->
+  <svg class="hidden" width="0" height="0" aria-hidden="true">
+    <defs>
+      <filter id="hd-sharpen" x="0%" y="0%" width="100%" height="100%" color-interpolation-filters="sRGB">
+        <!-- Subtle Unsharp-Mask Convolution Matrix for Video Frames -->
+        <feConvolveMatrix
+          order="3 3"
+          preserveAlpha="true"
+          kernelMatrix="0 -0.35 0 -0.35 2.4 -0.35 0 -0.35 0"
+          divisor="1"
+          bias="0"
+        />
+      </filter>
+    </defs>
+  </svg>
+
+  <!-- =================================================================
        PART 1: 800VH STICKY VIDEO-FRAME SCROLL-TO-RENOVATE HERO
        ================================================================= -->
   <section id="hero-scroll-container" class="relative w-full" style="height: 800vh;">
     <div class="sticky top-0 left-0 w-full h-screen overflow-hidden bg-obsidian select-none">
 
-      <!-- MAIN INTERACTIVE HTML5 FRAME CANVAS -->
-      <canvas id="renovation-canvas" class="w-full h-full block mode-day transition-all duration-500"></canvas>
+      <!-- MAIN INTERACTIVE HTML5 FRAME CANVAS (RETINA HIGH-DPI + HD CRISP) -->
+      <canvas id="renovation-canvas" class="w-full h-full block mode-day hd-crisp-active transition-all duration-300"></canvas>
 
       <!-- X-RAY CAD BLUEPRINT LOUPE OVERLAY (Follows cursor when X-Ray is toggled ON) -->
       <div id="xray-layer" class="absolute inset-0 bg-[#071626]/95 z-20">
@@ -139,32 +167,49 @@
       <!-- SUBTLE VIGNETTE OVERLAY FOR HUD LEGIBILITY -->
       <div class="absolute inset-0 bg-gradient-to-t from-obsidian/85 via-transparent to-obsidian/60 pointer-events-none z-10"></div>
 
-      <div class="absolute top-0 left-0 right-0 z-30 flex flex-wrap items-center justify-between gap-3 px-4 sm:px-8 py-4 bg-obsidian/65 backdrop-blur-md border-b border-gold/20">
+      <div class="absolute top-0 left-0 right-0 z-30 flex flex-wrap items-center justify-between gap-2.5 px-4 sm:px-6 py-3 bg-obsidian/70 backdrop-blur-md border-b border-gold/20">
         <div class="flex items-center gap-3">
-          <span class="font-serif text-2xl sm:text-3xl tracking-[0.28em] text-alabaster font-semibold">DAGORIYA</span>
-          <span class="hidden md:inline-block text-[10px] font-mono uppercase tracking-[0.2em] text-gold border border-gold/30 px-2.5 py-0.5 rounded-full">
-            8-Scroll Frame Engine
+          <span class="font-serif text-xl sm:text-2xl tracking-[0.28em] text-alabaster font-semibold">DAGORIYA</span>
+          <span class="hidden xl:inline-block text-[10px] font-mono uppercase tracking-[0.2em] text-gold border border-gold/30 px-2.5 py-0.5 rounded-full">
+            4K Retina Frame Engine
           </span>
         </div>
 
-        <!-- VIDEO FRAME LOADER BUTTONS + LIVE AMBIANCE TOOLBAR -->
+        <!-- VIDEO FRAME LOADER + ZOOM / FIT + HD SHARPNESS + LIGHTING TOOLBAR -->
         <div class="flex flex-wrap items-center gap-2">
-          <label class="cursor-pointer bg-gold hover:bg-goldDark text-obsidian font-mono text-[11px] font-semibold uppercase tracking-wider px-3.5 py-2 rounded-full transition flex items-center gap-1.5 shadow-lg">
+          <label class="cursor-pointer bg-gold hover:bg-goldDark text-obsidian font-mono text-[11px] font-semibold uppercase tracking-wider px-3 py-1.5 rounded-full transition flex items-center gap-1.5 shadow-lg">
             <span>📂 Select Video Frames</span>
             <input type="file" id="frame-files-input" multiple accept="image/*" class="hidden" />
           </label>
 
-          <label class="cursor-pointer bg-obsidian/90 hover:bg-gold/20 text-gold border border-gold/50 font-mono text-[11px] uppercase tracking-wider px-3.5 py-2 rounded-full transition hidden sm:flex items-center gap-1.5">
-            <span>📁 Select Frames Folder</span>
+          <label class="cursor-pointer bg-obsidian/90 hover:bg-gold/20 text-gold border border-gold/50 font-mono text-[11px] uppercase tracking-wider px-3 py-1.5 rounded-full transition hidden md:flex items-center gap-1.5">
+            <span>📁 Select Folder</span>
             <input type="file" id="frame-folder-input" webkitdirectory directory multiple class="hidden" />
           </label>
 
+          <!-- Frame Fit & Live Zoom Controls (Fixes Over-Zoomed Video Frames) -->
+          <div class="flex items-center bg-obsidian/85 border border-gold/30 rounded-full p-0.5 text-[11px] font-mono">
+            <button type="button" onclick="setFrameFitMode('contain')" id="fit-contain-btn" title="Zero Crop — Shows Full Video Frame" class="px-2.5 py-1 rounded-full bg-gold text-obsidian font-semibold transition">
+              Full Frame
+            </button>
+            <button type="button" onclick="setFrameFitMode('cover')" id="fit-cover-btn" title="Fill Screen Edge-to-Edge" class="px-2.5 py-1 rounded-full text-alabaster/75 hover:text-gold transition">
+              Fill
+            </button>
+            <span class="h-3.5 w-[1px] bg-gold/25 mx-1"></span>
+            <button type="button" onclick="adjustFrameZoom(-0.04)" title="Zoom Out Frame" class="px-2 py-0.5 text-gold hover:bg-white/10 rounded-full transition font-bold">−</button>
+            <span id="zoom-level-label" class="px-1.5 text-[10px] text-alabaster min-w-[38px] text-center">94%</span>
+            <button type="button" onclick="adjustFrameZoom(0.04)" title="Zoom In Frame" class="px-2 py-0.5 text-gold hover:bg-white/10 rounded-full transition font-bold">+</button>
+            <button type="button" onclick="toggleHdCrisp()" id="hd-crisp-btn" title="Toggle Optical HD Unsharp Filter" class="ml-1 px-2.5 py-1 rounded-full bg-emerald-400/20 border border-emerald-400/50 text-emerald-300 font-semibold transition">
+              ✨ HD Crisp
+            </button>
+          </div>
+
           <!-- Lighting & X-Ray Controls -->
-          <div class="flex items-center bg-obsidian/80 border border-gold/25 rounded-full p-1 text-[11px]">
+          <div class="hidden sm:flex items-center bg-obsidian/80 border border-gold/25 rounded-full p-0.5 text-[11px]">
             <button type="button" onclick="setLighting('day')" id="light-day" class="px-2.5 py-1 rounded-full bg-gold text-obsidian font-medium transition">Day</button>
             <button type="button" onclick="setLighting('golden')" id="light-golden" class="px-2.5 py-1 rounded-full text-alabaster/75 hover:text-gold transition">Golden</button>
             <button type="button" onclick="setLighting('night')" id="light-night" class="px-2.5 py-1 rounded-full text-alabaster/75 hover:text-gold transition">Night</button>
-            <button type="button" onclick="toggleXray()" id="xray-btn" class="ml-1 px-2.5 py-1 rounded-full border border-teal-400/40 text-teal-300 font-mono transition">X-Ray CAD</button>
+            <button type="button" onclick="toggleXray()" id="xray-btn" class="ml-1 px-2.5 py-1 rounded-full border border-teal-400/40 text-teal-300 font-mono transition">X-Ray</button>
           </div>
         </div>
       </div>
@@ -194,28 +239,46 @@
         <div id="step-indicators" class="bg-obsidian/65 backdrop-blur-md border border-gold/25 px-3 py-4 rounded-2xl flex flex-col gap-2.5"></div>
       </div>
 
-      <!-- BOTTOM-LEFT: STAGE TITLE HUD & LIVE FRAME TELEMETRY -->
-      <div class="absolute bottom-5 left-4 sm:left-8 z-30 max-w-lg bg-obsidian/75 backdrop-blur-xl border border-gold/30 border-l-4 border-l-gold p-4 sm:p-6 rounded-2xl text-alabaster shadow-2xl">
-        <div class="flex flex-wrap items-center gap-2 sm:gap-3 font-mono text-[11px] text-gold uppercase tracking-widest mb-1.5">
-          <span id="hud-stage-num">STAGE 01 / 08</span>
-          <span>•</span>
-          <span id="hud-frame-counter">FRAME 001 / 120</span>
-          <span>•</span>
-          <span id="hud-scroll-pct">0%</span>
+      <!-- BOTTOM-LEFT: MINIMIZABLE STAGE TITLE HUD & LIVE FRAME TELEMETRY -->
+      <div id="stage-hud-card" class="absolute bottom-5 left-4 sm:left-8 z-30 max-w-lg bg-obsidian/75 backdrop-blur-xl border border-gold/30 border-l-4 border-l-gold p-4 sm:p-5 rounded-2xl text-alabaster shadow-2xl transition-all duration-300">
+        <!-- Top Header Row (Always Visible even when Minimized) -->
+        <div class="flex items-center justify-between gap-4">
+          <div class="flex flex-wrap items-center gap-2 font-mono text-[11px] text-gold uppercase tracking-widest">
+            <span id="hud-stage-num" class="font-semibold">STAGE 01 / 08</span>
+            <span id="hud-frame-dot">•</span>
+            <span id="hud-frame-counter">FRAME 001 / 120</span>
+            <span>•</span>
+            <span id="hud-scroll-pct">0%</span>
+          </div>
+
+          <!-- Minimize / Expand Toggle Button -->
+          <button
+            type="button"
+            id="hud-toggle-btn"
+            onclick="toggleHudMinimize()"
+            title="Minimize or Expand Stage HUD"
+            class="shrink-0 bg-white/10 hover:bg-gold text-alabaster hover:text-obsidian border border-gold/40 font-mono text-[10px] uppercase tracking-wider px-2.5 py-1 rounded-full transition flex items-center gap-1 shadow"
+          >
+            <span id="hud-toggle-label">— Minimize</span>
+          </button>
         </div>
-        <h2 id="hud-stage-title" class="font-serif text-2xl sm:text-4xl text-alabaster tracking-wide mb-1.5">
-          01 / Raw Architectural Space
-        </h2>
-        <p id="hud-stage-desc" class="text-xs sm:text-sm text-alabaster/75 font-light leading-relaxed mb-3">
-          Un-renovated concrete &amp; brick structural shell with laser elevation markers.
-        </p>
-        <div class="flex flex-wrap items-center justify-between gap-2 pt-2.5 border-t border-white/10">
-          <p id="frame-source-badge" class="font-mono text-[10px] text-emerald-400 uppercase tracking-wider">
-            ⚡ 120-Frame 3D Engine Active (Or load your video frames above)
+
+        <!-- Collapsible Body (Smoothly hides when Minimized) -->
+        <div id="hud-collapsible-body" class="overflow-hidden transition-all duration-300 max-h-64 opacity-100 mt-2">
+          <h2 id="hud-stage-title" class="font-serif text-2xl sm:text-4xl text-alabaster tracking-wide mb-1.5">
+            01 / Raw Architectural Space
+          </h2>
+          <p id="hud-stage-desc" class="text-xs sm:text-sm text-alabaster/75 font-light leading-relaxed mb-3">
+            Un-renovated concrete &amp; brick structural shell with laser elevation markers.
           </p>
-          <div class="flex items-center gap-1.5">
-            <button type="button" onclick="stepStage(-1)" class="px-2.5 py-1 rounded bg-white/10 hover:bg-gold hover:text-obsidian text-xs font-mono transition">← Prev</button>
-            <button type="button" onclick="stepStage(1)" class="px-2.5 py-1 rounded bg-white/10 hover:bg-gold hover:text-obsidian text-xs font-mono transition">Next →</button>
+          <div class="flex flex-wrap items-center justify-between gap-2 pt-2.5 border-t border-white/10">
+            <p id="frame-source-badge" class="font-mono text-[10px] text-emerald-400 uppercase tracking-wider">
+              ⚡ 120-Frame 3D Engine Active (Or load your video frames above)
+            </p>
+            <div class="flex items-center gap-1.5">
+              <button type="button" onclick="stepStage(-1)" class="px-2.5 py-1 rounded bg-white/10 hover:bg-gold hover:text-obsidian text-xs font-mono transition">← Prev</button>
+              <button type="button" onclick="stepStage(1)" class="px-2.5 py-1 rounded bg-white/10 hover:bg-gold hover:text-obsidian text-xs font-mono transition">Next →</button>
+            </div>
           </div>
         </div>
       </div>
@@ -520,14 +583,32 @@
     ];
 
     const canvas = document.getElementById('renovation-canvas');
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getElementById('renovation-canvas').getContext('2d', { alpha: false });
     let userFrames = [];
     let currentScrollProgress = 0;
     let targetScrollProgress = 0;
 
+    // Smart Frame Fit & Zoom State (Default: 'contain' at 94% scale so 0% of the room or chandelier is cropped)
+    let frameFitMode = 'contain'; // 'contain' (Zero Crop) or 'cover' (Edge-to-Edge)
+    let frameZoomScale = 0.94;    // 0.75 to 1.25 adjustable live
+    let hdCrispEnabled = true;
+    let cssWidth = window.innerWidth;
+    let cssHeight = window.innerHeight;
+
     function resizeCanvas() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+      const dpr = Math.min(window.devicePixelRatio || 1, 2.5);
+      cssWidth = window.innerWidth;
+      cssHeight = window.innerHeight;
+
+      canvas.width = Math.round(cssWidth * dpr);
+      canvas.height = Math.round(cssHeight * dpr);
+      canvas.style.width = `${cssWidth}px`;
+      canvas.style.height = `${cssHeight}px`;
+
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = 'high';
+
       const baWrapper = document.getElementById('ba-wrapper');
       const baBeforeImg = document.getElementById('ba-before-img');
       if (baWrapper && baBeforeImg) {
@@ -535,6 +616,41 @@
       }
     }
     window.addEventListener('resize', resizeCanvas);
+
+    // Live Frame Fit, Zoom & Optical HD Sharpness Controls
+    function setFrameFitMode(mode) {
+      frameFitMode = mode;
+      frameZoomScale = mode === 'contain' ? 0.94 : 1.0;
+      document.getElementById('zoom-level-label').textContent = `${Math.round(frameZoomScale * 100)}%`;
+
+      const containBtn = document.getElementById('fit-contain-btn');
+      const coverBtn = document.getElementById('fit-cover-btn');
+      if (mode === 'contain') {
+        containBtn.className = "px-2.5 py-1 rounded-full bg-gold text-obsidian font-semibold transition";
+        coverBtn.className = "px-2.5 py-1 rounded-full text-alabaster/75 hover:text-gold transition";
+      } else {
+        coverBtn.className = "px-2.5 py-1 rounded-full bg-gold text-obsidian font-semibold transition";
+        containBtn.className = "px-2.5 py-1 rounded-full text-alabaster/75 hover:text-gold transition";
+      }
+    }
+
+    function adjustFrameZoom(delta) {
+      frameZoomScale = Math.max(0.75, Math.min(1.25, +(frameZoomScale + delta).toFixed(2)));
+      document.getElementById('zoom-level-label').textContent = `${Math.round(frameZoomScale * 100)}%`;
+    }
+
+    function toggleHdCrisp() {
+      hdCrispEnabled = !hdCrispEnabled;
+      canvas.classList.toggle('hd-crisp-active', hdCrispEnabled);
+      const btn = document.getElementById('hd-crisp-btn');
+      if (hdCrispEnabled) {
+        btn.className = "ml-1 px-2.5 py-1 rounded-full bg-emerald-400/20 border border-emerald-400/50 text-emerald-300 font-semibold transition";
+        btn.textContent = "✨ HD Crisp";
+      } else {
+        btn.className = "ml-1 px-2.5 py-1 rounded-full bg-white/5 border border-white/20 text-alabaster/60 transition";
+        btn.textContent = "HD Off";
+      }
+    }
 
     // Build Right-Side 8-Step Vertical Progress Bar
     const stepContainer = document.getElementById('step-indicators');
@@ -592,22 +708,56 @@
     document.getElementById('frame-files-input').addEventListener('change', e => handleSelectedFiles(e.target.files));
     document.getElementById('frame-folder-input').addEventListener('change', e => handleSelectedFiles(e.target.files));
 
-    function drawImageCover(ctx, img, w, h) {
+    function drawSmartVideoFrame(ctx, img, w, h) {
       if (!img || !img.complete || !img.naturalWidth) return;
+
       const imgRatio = img.naturalWidth / img.naturalHeight;
       const winRatio = w / h;
-      let drawW, drawH, offsetX, offsetY;
+
+      // 1. Draw Ambient Darkened Edge Fill (So there are never harsh black bars around uncropped frames)
+      ctx.save();
+      let bgW, bgH;
       if (winRatio > imgRatio) {
-        drawW = w;
-        drawH = w / imgRatio;
-        offsetX = 0;
-        offsetY = (h - drawH) / 2;
+        bgW = w * 1.06;
+        bgH = bgW / imgRatio;
       } else {
-        drawH = h;
-        drawW = h * imgRatio;
-        offsetX = (w - drawW) / 2;
-        offsetY = 0;
+        bgH = h * 1.06;
+        bgW = bgH * imgRatio;
       }
+      ctx.filter = 'blur(24px) brightness(0.32)';
+      ctx.drawImage(img, (w - bgW) / 2, (h - bgH) / 2, bgW, bgH);
+      ctx.restore();
+
+      // 2. Calculate Sharp Foreground Frame Dimensions based on 'contain' (Zero Crop) or 'cover'
+      let baseW, baseH;
+      if (frameFitMode === 'contain') {
+        if (winRatio > imgRatio) {
+          baseH = h;
+          baseW = h * imgRatio;
+        } else {
+          baseW = w;
+          baseH = w / imgRatio;
+        }
+      } else {
+        if (winRatio > imgRatio) {
+          baseW = w;
+          baseH = w / imgRatio;
+        } else {
+          baseH = h;
+          baseW = h * imgRatio;
+        }
+      }
+
+      // Apply Live User Zoom Scale (Default 94% so top navbar never cuts off chandelier)
+      const drawW = Math.round(baseW * frameZoomScale);
+      const drawH = Math.round(baseH * frameZoomScale);
+      const offsetX = Math.round((w - drawW) / 2);
+      // Slight downward offset (+14px) when scaled < 100% so frame clears the top navbar cleanly
+      const topClearance = frameZoomScale < 0.98 ? 14 : 0;
+      const offsetY = Math.round((h - drawH) / 2 + topClearance);
+
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = 'high';
       ctx.drawImage(img, offsetX, offsetY, drawW, drawH);
     }
 
@@ -840,10 +990,10 @@
       const stageIdx = Math.min(7, Math.floor(currentScrollProgress * 8));
 
       if (userFrames.length > 0 && userFrames[frameIdx]) {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        drawImageCover(ctx, userFrames[frameIdx], canvas.width, canvas.height);
+        ctx.clearRect(0, 0, cssWidth, cssHeight);
+        drawSmartVideoFrame(ctx, userFrames[frameIdx], cssWidth, cssHeight);
       } else {
-        drawProceduralRoom(currentScrollProgress, canvas.width, canvas.height);
+        drawProceduralRoom(currentScrollProgress, cssWidth, cssHeight);
       }
 
       const st = STAGES[stageIdx];
@@ -1084,6 +1234,35 @@
         `Hello DAGORIYA Studio,\n\nI generated a turnkey interior BOQ estimate on your website:\n• Property: ${type}\n• Carpet Area: ${area} sq.ft\n• Estimated Turnkey Budget: ${total}\n\nPlease schedule a private design consultation.`
       );
       window.open(`https://wa.me/?text=${text}`, '_blank');
+    }
+
+    let isHudMinimized = false;
+
+    function toggleHudMinimize(forceState) {
+      isHudMinimized = typeof forceState === 'boolean' ? forceState : !isHudMinimized;
+      const card = document.getElementById('stage-hud-card');
+      const body = document.getElementById('hud-collapsible-body');
+      const label = document.getElementById('hud-toggle-label');
+      const frameCounter = document.getElementById('hud-frame-counter');
+      const frameDot = document.getElementById('hud-frame-dot');
+
+      if (isHudMinimized) {
+        body.classList.remove('max-h-64', 'opacity-100', 'mt-2');
+        body.classList.add('max-h-0', 'opacity-0', 'mt-0', 'pointer-events-none');
+        card.classList.remove('p-4', 'sm:p-5', 'rounded-2xl');
+        card.classList.add('py-2.5', 'px-4', 'rounded-full');
+        frameCounter.classList.add('hidden');
+        frameDot.classList.add('hidden');
+        label.textContent = '+ Expand HUD';
+      } else {
+        body.classList.remove('max-h-0', 'opacity-0', 'mt-0', 'pointer-events-none');
+        body.classList.add('max-h-64', 'opacity-100', 'mt-2');
+        card.classList.remove('py-2.5', 'px-4', 'rounded-full');
+        card.classList.add('p-4', 'sm:p-5', 'rounded-2xl');
+        frameCounter.classList.remove('hidden');
+        frameDot.classList.remove('hidden');
+        label.textContent = '— Minimize';
+      }
     }
 
     window.onload = function () {
