@@ -3,1086 +3,498 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DAGORIYA — Haute Architecture & Interior Couture</title>
+  <title>ATELIER VELOX — Haute Architecture & Interior Couture</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,600&family=JetBrains+Mono:wght@300;400;500&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            alabaster: '#FAF8F5',
+            pearl: '#F2ECE1',
+            charcoal: '#141413',
+            obsidian: '#0B0B0A',
+            gold: '#C5A880',
+            goldLight: '#DFC6A2',
+            goldDark: '#9A7B50',
+            stone: '#78736A'
+          },
+          fontFamily: {
+            serif: ['"Cormorant Garamond"', 'Georgia', 'serif'],
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
 
   <style>
     :root {
-      --cx: 50vw;
-      --cy: 50vh;
-      --alabaster: #FAF8F5;
-      --pearl: #F2ECE1;
-      --charcoal: #1C1C1C;
-      --obsidian: #0B0B0A;
-      --gold: #C5A880;
-      --gold-dark: #9A7B50;
+      --cursor-x: 50vw;
+      --cursor-y: 50vh;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-
-    html, body {
+    body {
       background-color: #FAF8F5;
-      color: #1C1C1C;
+      color: #141413;
       font-family: 'Plus Jakarta Sans', sans-serif;
       overflow-x: hidden;
-      scroll-behavior: smooth;
     }
 
-    /* Strictly hide raw file inputs even if external CSS is slow */
-    input[type="file"] {
-      display: none !important;
-      visibility: hidden !important;
-      width: 0 !important;
-      height: 0 !important;
-      position: absolute !important;
-      opacity: 0 !important;
-      pointer-events: none !important;
-    }
-
+    /* Custom Scrollbar */
     ::-webkit-scrollbar { width: 6px; }
     ::-webkit-scrollbar-track { background: #0B0B0A; }
     ::-webkit-scrollbar-thumb { background: #C5A880; border-radius: 3px; }
 
-    .font-serif-lux { font-family: 'Cormorant Garamond', Georgia, serif; }
-    .font-mono-lux { font-family: 'JetBrains Mono', monospace; }
-
-    /* 800vh Sticky Renovation Track */
-    #hero-scroll-container {
-      position: relative;
-      width: 100%;
-      height: 800vh;
-      background: #0B0B0A;
+    /* Custom Magnetic Cursor */
+    @media (pointer: fine) {
+      .custom-cursor-dot {
+        position: fixed;
+        top: 0; left: 0;
+        width: 8px; height: 8px;
+        background: #C5A880;
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 9999;
+        transform: translate(-50%, -50%);
+        transition: width 0.2s, height 0.2s, background 0.2s;
+      }
+      .custom-cursor-ring {
+        position: fixed;
+        top: 0; left: 0;
+        width: 38px; height: 38px;
+        border: 1px solid rgba(197, 168, 128, 0.55);
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 9998;
+        transform: translate(-50%, -50%);
+        transition: width 0.25s ease-out, height 0.25s ease-out, border-color 0.25s;
+      }
     }
 
-    #hero-sticky-viewport {
-      position: sticky;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100vh;
-      overflow: hidden;
-      background: #0B0B0A;
-      user-select: none;
+    /* X-Ray Blueprint Lens Mask */
+    .xray-layer {
+      pointer-events: none;
+      clip-path: circle(0px at var(--cursor-x) var(--cursor-y));
+      transition: clip-path 0.08s ease-out;
+    }
+    .xray-active .xray-layer {
+      clip-path: circle(165px at var(--cursor-x) var(--cursor-y));
     }
 
-    /* Native 4K GPU Frame Layer + Fallback Canvas */
-    #stage-media-wrap {
+    /* Stage Layer Transitions */
+    .renovation-layer {
       position: absolute;
       inset: 0;
       width: 100%;
       height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: #0B0B0A;
-      overflow: hidden;
+      will-change: opacity, transform, filter;
+      transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), filter 0.6s ease;
     }
 
-    #renovation-canvas {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      display: block;
-      z-index: 1;
-    }
+    /* Lighting Modes on Hero Room */
+    .lighting-day { filter: brightness(1.03) contrast(1.02) saturate(1.0); }
+    .lighting-golden { filter: brightness(0.96) contrast(1.08) sepia(0.22) saturate(1.25); }
+    .lighting-midnight { filter: brightness(0.68) contrast(1.18) hue-rotate(-12deg) saturate(0.9); }
 
-    #user-frame-img {
-      position: relative;
-      z-index: 2;
-      width: 100%;
-      height: 100%;
-      object-fit: contain; /* Default: No Over-Zoom / No Cropping */
-      image-rendering: -webkit-optimize-contrast;
-      image-rendering: high-quality;
-      transform-origin: center center;
-      transition: transform 0.15s ease-out;
-      display: none;
-      pointer-events: none;
-    }
-
-    /* Ambient Blur Backdrop so Full-Frame mode has zero ugly black bars */
-    #user-frame-backdrop {
-      position: absolute;
-      inset: -4%;
-      width: 108%;
-      height: 108%;
-      object-fit: cover;
-      filter: blur(28px) brightness(0.38);
-      z-index: 1;
-      display: none;
-      pointer-events: none;
-    }
-
-    /* Lighting Modes */
-    .mode-day { filter: brightness(1.02) contrast(1.03); }
-    .mode-golden { filter: brightness(0.96) contrast(1.08) sepia(0.22) saturate(1.28); }
-    .mode-night { filter: brightness(0.68) contrast(1.18) saturate(0.85); }
-
-    /* X-Ray CAD Lens */
-    #xray-layer {
-      position: absolute;
-      inset: 0;
-      background: rgba(7, 22, 38, 0.94);
-      z-index: 15;
-      pointer-events: none;
-      clip-path: circle(0px at var(--cx) var(--cy));
-      transition: clip-path 0.06s ease-out;
-    }
-    body.xray-on #xray-layer {
-      clip-path: circle(165px at var(--cx) var(--cy));
-    }
-
-    /* Parallax Portfolio Banners */
-    .parallax-bg {
+    /* Parallax Banner */
+    .parallax-banner {
       background-attachment: fixed;
       background-position: center;
-      background-size: cover;
       background-repeat: no-repeat;
+      background-size: cover;
     }
     @media (max-width: 768px) {
-      .parallax-bg { background-attachment: scroll; }
+      .parallax-banner {
+        background-attachment: scroll;
+      }
     }
 
-    @keyframes pulseRing {
-      0% { box-shadow: 0 0 0 0 rgba(197,168,128,0.8); }
-      70% { box-shadow: 0 0 0 14px rgba(197,168,128,0); }
-      100% { box-shadow: 0 0 0 0 rgba(197,168,128,0); }
+    /* Pulse Animation for Floorplan Pins */
+    @keyframes pulseGold {
+      0% { box-shadow: 0 0 0 0 rgba(197, 168, 128, 0.7); }
+      70% { box-shadow: 0 0 0 14px rgba(197, 168, 128, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(197, 168, 128, 0); }
     }
-    .pin-pulse { animation: pulseRing 2s infinite; }
+    .pin-pulse {
+      animation: pulseGold 2s infinite;
+    }
+
+    /* Subtle grain overlay */
+    .film-grain {
+      background-image: radial-gradient(rgba(255,255,255,0.04) 1px, transparent 0);
+      background-size: 24px 24px;
+    }
   </style>
 </head>
-<body>
+<body class="selection:bg-gold selection:text-obsidian">
 
-  <!-- HIDDEN FILE INPUTS FOR VIDEO FRAMES -->
-  <input type="file" id="frame-files-input" multiple accept="image/*" style="display:none !important;" />
-  <input type="file" id="frame-folder-input" webkitdirectory directory multiple style="display:none !important;" />
+  <!-- Custom Cursor -->
+  <div id="cursorDot" class="custom-cursor-dot hidden md:block"></div>
+  <div id="cursorRing" class="custom-cursor-ring hidden md:block"></div>
 
-  <!-- =================================================================
-       PART 1: 800VH STICKY VIDEO-FRAME SCROLL-TO-RENOVATE HERO
-       ================================================================= -->
-  <section id="hero-scroll-container">
-    <div id="hero-sticky-viewport">
+  <!-- ==========================================
+       PART 1: 800VH 8-SCROLL ROOM RENOVATION HERO
+       ========================================== -->
+  <section id="hero-scroll-track" class="relative w-full" style="height: 800vh;">
+    <div id="hero-sticky-viewport" class="sticky top-0 left-0 w-full h-screen overflow-hidden bg-obsidian select-none">
 
-      <!-- MAIN VISUAL VIEWPORT (BUILT-IN 3D CANVAS + CRISP 4K USER FRAME IMG) -->
-      <div id="stage-media-wrap" class="mode-day">
-        <canvas id="renovation-canvas"></canvas>
-        <img id="user-frame-backdrop" alt="" />
-        <img id="user-frame-img" alt="Dagoriya Architectural Frame" />
+      <!-- MASTER ARCHITECTURAL ROOM CONTAINER -->
+      <div id="room-canvas" class="relative w-full h-full lighting-day transition-all duration-700">
+
+        <!-- STAGE 01: Raw Architectural Space & Laser Scan (0% - 12.5%) -->
+        <div id="stage-1" class="renovation-layer opacity-100">
+          <svg viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice" class="w-full h-full">
+            <defs>
+              <linearGradient id="rawWall" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#1E1D1B"/>
+                <stop offset="50%" stop-color="#2A2825"/>
+                <stop offset="100%" stop-color="#151412"/>
+              </linearGradient>
+              <pattern id="brickGrid" width="60" height="30" patternUnits="userSpaceOnUse">
+                <rect width="60" height="30" fill="none" stroke="#36332E" stroke-width="1"/>
+                <line x1="30" y1="0" x2="30" y2="15" stroke="#36332E" stroke-width="1"/>
+              </pattern>
+              <pattern id="laserGrid" width="80" height="80" patternUnits="userSpaceOnUse">
+                <path d="M 80 0 L 0 0 0 80" fill="none" stroke="rgba(197,168,128,0.12)" stroke-width="1"/>
+              </pattern>
+            </defs>
+            <!-- Concrete Shell Background -->
+            <rect width="1920" height="1080" fill="url(#rawWall)"/>
+            <!-- Back Wall Perspective -->
+            <polygon points="320,160 1600,160 1600,780 320,780" fill="url(#brickGrid)" opacity="0.65"/>
+            <!-- Left Wall -->
+            <polygon points="0,0 320,160 320,780 0,1080" fill="#1B1A18" stroke="#3A3630" stroke-width="1.5"/>
+            <!-- Right Window Wall Raw Cutouts -->
+            <polygon points="1920,0 1600,160 1600,780 1920,1080" fill="#21201D" stroke="#3A3630" stroke-width="1.5"/>
+            <!-- Raw Window Frames -->
+            <polygon points="1640,190 1870,95 1870,890 1640,740" fill="#2C3033" stroke="#524D45" stroke-width="2"/>
+            <!-- Exposed Ceiling Beams -->
+            <polygon points="0,0 1920,0 1600,160 320,160" fill="#141311"/>
+            <line x1="200" y1="40" x2="1720" y2="40" stroke="#2D2A26" stroke-width="18"/>
+            <line x1="260" y1="95" x2="1660" y2="95" stroke="#252320" stroke-width="14"/>
+            <!-- Raw Concrete Slab Floor -->
+            <polygon points="320,780 1600,780 1920,1080 0,1080" fill="#23211E"/>
+            <!-- CAD Laser Grid Overlay -->
+            <rect width="1920" height="1080" fill="url(#laserGrid)"/>
+            <!-- Architectural Elevation Markers -->
+            <g stroke="#C5A880" stroke-width="1" stroke-dasharray="6,6" opacity="0.55">
+              <line x1="320" y1="160" x2="1600" y2="160"/>
+              <line x1="320" y1="780" x2="1600" y2="780"/>
+              <line x1="960" y1="0" x2="960" y2="1080"/>
+            </g>
+            <text x="345" y="195" fill="#C5A880" font-family="JetBrains Mono" font-size="13" opacity="0.8">ELEVATION +4200MM // BARE SHELL STRUCTURAL SCAN</text>
+            <text x="345" y="760" fill="#C5A880" font-family="JetBrains Mono" font-size="13" opacity="0.8">FFL ±0.00 // RAW RCC SLAB</text>
+          </svg>
+        </div>
+
+        <!-- STAGE 02: Smooth Plastered Warm Alabaster Walls (12.5% - 25%) -->
+        <div id="stage-2" class="renovation-layer opacity-0">
+          <svg viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice" class="w-full h-full">
+            <defs>
+              <linearGradient id="alabasterBack" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#EAE3D5"/>
+                <stop offset="100%" stop-color="#D8CEBE"/>
+              </linearGradient>
+              <linearGradient id="alabasterLeft" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="#C9BFA9"/>
+                <stop offset="100%" stop-color="#DFD7C8"/>
+              </linearGradient>
+              <linearGradient id="alabasterRight" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="#E5DEC9"/>
+                <stop offset="100%" stop-color="#F3EFE6"/>
+              </linearGradient>
+            </defs>
+            <!-- Smooth Plastered Back Wall -->
+            <polygon points="320,160 1600,160 1600,780 320,780" fill="url(#alabasterBack)"/>
+            <!-- Smooth Plastered Left Wall -->
+            <polygon points="0,0 320,160 320,780 0,1080" fill="url(#alabasterLeft)"/>
+            <!-- Smooth Plastered Right Window Wall with Natural Daylight -->
+            <polygon points="1920,0 1600,160 1600,780 1920,1080" fill="url(#alabasterRight)"/>
+            <!-- Tall Arch/Floor-to-Ceiling Window Daylight -->
+            <polygon points="1645,175 1885,75 1885,915 1645,755" fill="#FAF7F0"/>
+            <!-- Soft Sunlight Spill on Back Wall -->
+            <polygon points="1100,160 1600,160 1600,780 900,780" fill="rgba(255,250,235,0.22)"/>
+          </svg>
+        </div>
+
+        <!-- STAGE 03: Recessed Gypsum Coffered False Ceiling (25% - 37.5%) -->
+        <div id="stage-3" class="renovation-layer opacity-0">
+          <svg viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice" class="w-full h-full">
+            <!-- Outer Ceiling Perimeter -->
+            <polygon points="0,0 1920,0 1600,160 320,160" fill="#F2ECE1"/>
+            <!-- Recessed Coffer Step 1 -->
+            <polygon points="150,22 1770,22 1530,140 390,140" fill="#E2D9C8" stroke="#C5A880" stroke-width="1.5"/>
+            <!-- Inner Deep Coffer Tray -->
+            <polygon points="240,42 1680,42 1480,125 440,125" fill="#D5CBB8"/>
+            <!-- Architectural Linear Diffuser Slots -->
+            <line x1="360" y1="150" x2="1560" y2="150" stroke="#1C1C1C" stroke-width="4" opacity="0.7"/>
+            <line x1="420" y1="32" x2="1500" y2="32" stroke="#1C1C1C" stroke-width="3" opacity="0.5"/>
+          </svg>
+        </div>
+
+        <!-- STAGE 04: Bespoke Flooring — Herringbone Oak & Bookmatched Calacatta Border (37.5% - 50%) -->
+        <div id="stage-4" class="renovation-layer opacity-0">
+          <svg viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice" class="w-full h-full">
+            <defs>
+              <linearGradient id="woodFloor" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#8B6B4A"/>
+                <stop offset="50%" stop-color="#765839"/>
+                <stop offset="100%" stop-color="#5A4027"/>
+              </linearGradient>
+              <pattern id="herringbone" width="80" height="40" patternUnits="userSpaceOnUse">
+                <path d="M0,20 L40,0 L80,20 L40,40 Z" fill="none" stroke="rgba(45,28,12,0.32)" stroke-width="1.5"/>
+                <line x1="40" y1="0" x2="40" y2="40" stroke="rgba(255,235,205,0.12)" stroke-width="1"/>
+              </pattern>
+            </defs>
+            <!-- Main Floor Polygon -->
+            <polygon id="floor-poly" points="320,780 1600,780 1920,1080 0,1080" fill="url(#woodFloor)"/>
+            <polygon points="320,780 1600,780 1920,1080 0,1080" fill="url(#herringbone)"/>
+            <!-- Italian Marble Inlay Border & Brass Trim -->
+            <polygon points="340,795 1580,795 1840,1055 80,1055" fill="none" stroke="#C5A880" stroke-width="3" opacity="0.85"/>
+            <!-- Baseboard Skirting -->
+            <polygon points="320,766 1600,766 1600,780 320,780" fill="#C7BBA6"/>
+            <polygon points="0,1060 320,766 320,780 0,1080" fill="#B6A992"/>
+          </svg>
+        </div>
+
+        <!-- STAGE 05: Custom Millwork, Fluted Walnut Paneling & Sheer Drapery (50% - 62.5%) -->
+        <div id="stage-5" class="renovation-layer opacity-0">
+          <svg viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice" class="w-full h-full">
+            <defs>
+              <pattern id="flutedWood" width="14" height="100" patternUnits="userSpaceOnUse">
+                <rect x="0" y="0" width="9" height="100" fill="#4A3525"/>
+                <rect x="9" y="0" width="5" height="100" fill="#2D1E12"/>
+              </pattern>
+              <linearGradient id="sheerCurtain" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="rgba(250,248,245,0.92)"/>
+                <stop offset="50%" stop-color="rgba(240,234,222,0.65)"/>
+                <stop offset="100%" stop-color="rgba(250,248,245,0.95)"/>
+              </linearGradient>
+            </defs>
+            <!-- Classic Parisian Boiserie Wall Moldings on Back Wall -->
+            <rect x="640" y="200" width="640" height="520" fill="none" stroke="#C5A880" stroke-width="2" opacity="0.7"/>
+            <rect x="660" y="220" width="600" height="480" fill="none" stroke="#B8AC99" stroke-width="1"/>
+            <!-- Left Feature Fluted Walnut Cladding Panel -->
+            <rect x="350" y="160" width="240" height="606" fill="url(#flutedWood)"/>
+            <line x1="590" y1="160" x2="590" y2="766" stroke="#C5A880" stroke-width="3"/>
+            <!-- Right Feature Travertine Marble Fireplace / Console Cladding -->
+            <rect x="1330" y="160" width="230" height="606" fill="#D8CFC0" stroke="#C5A880" stroke-width="2"/>
+            <!-- Built-in Minimalist Hearth Niche -->
+            <rect x="1365" y="580" width="160" height="120" fill="#181715" stroke="#C5A880" stroke-width="1.5"/>
+            <!-- Floor-to-Ceiling Belgian Linen Sheer Drapery on Right Window Wall -->
+            <polygon points="1590,155 1690,115 1690,840 1590,775" fill="url(#sheerCurtain)"/>
+            <polygon points="1810,65 1915,15 1915,1040 1810,945" fill="url(#sheerCurtain)"/>
+            <!-- Drapery Vertical Pleat Lines -->
+            <g stroke="rgba(180,168,148,0.45)" stroke-width="1.5">
+              <line x1="1615" y1="145" x2="1615" y2="795"/>
+              <line x1="1640" y1="135" x2="1640" y2="810"/>
+              <line x1="1665" y1="125" x2="1665" y2="825"/>
+              <line x1="1835" y1="55" x2="1835" y2="965"/>
+              <line x1="1865" y1="40" x2="1865" y2="990"/>
+              <line x1="1890" y1="28" x2="1890" y2="1015"/>
+            </g>
+          </svg>
+        </div>
+
+        <!-- STAGE 06: Curated Luxury Furniture — Bouclé Sofa, Lounge Chairs & Travertine Table (62.5% - 75%) -->
+        <div id="stage-6" class="renovation-layer opacity-0">
+          <svg viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice" class="w-full h-full">
+            <defs>
+              <linearGradient id="boucleSofa" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#F7F4EE"/>
+                <stop offset="100%" stop-color="#DDD5C7"/>
+              </linearGradient>
+              <linearGradient id="cognacLeather" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#9C5B34"/>
+                <stop offset="100%" stop-color="#63361B"/>
+              </linearGradient>
+            </defs>
+            <!-- Soft Contact Shadows on Floor -->
+            <ellipse cx="960" cy="835" rx="440" ry="42" fill="rgba(15,12,8,0.38)"/>
+            <ellipse cx="460" cy="895" rx="155" ry="30" fill="rgba(15,12,8,0.36)"/>
+            <ellipse cx="960" cy="940" rx="250" ry="32" fill="rgba(15,12,8,0.42)"/>
+
+            <!-- Italian Curved Modular Bouclé Sofa (Center) -->
+            <!-- Backrest -->
+            <rect x="560" y="650" width="800" height="115" rx="42" fill="url(#boucleSofa)" stroke="#CFC6B6" stroke-width="1.5"/>
+            <!-- Left & Right Bolster Arms -->
+            <rect x="525" y="695" width="90" height="125" rx="36" fill="url(#boucleSofa)" stroke="#C8BFAEE" stroke-width="1.5"/>
+            <rect x="1305" y="695" width="90" height="125" rx="36" fill="url(#boucleSofa)" stroke="#C8BFAEE" stroke-width="1.5"/>
+            <!-- 3 Deep Plush Seat Cushions -->
+            <rect x="595" y="730" width="245" height="90" rx="22" fill="#EFEAE0" stroke="#D2C9B8" stroke-width="1.5"/>
+            <rect x="840" y="730" width="240" height="90" rx="22" fill="#F3EFE6" stroke="#D2C9B8" stroke-width="1.5"/>
+            <rect x="1080" y="730" width="245" height="90" rx="22" fill="#EFEAE0" stroke="#D2C9B8" stroke-width="1.5"/>
+            <!-- Brushed Brass Plinth Base -->
+            <rect x="560" y="818" width="800" height="10" rx="3" fill="#C5A880"/>
+            <!-- Designer Throw Pillows -->
+            <rect x="625" y="675" width="75" height="65" rx="14" fill="#C5A880" transform="rotate(-6 625 675)"/>
+            <rect x="1210" y="675" width="75" height="65" rx="14" fill="#4A3525" transform="rotate(8 1210 675)"/>
+
+            <!-- Bespoke Cognac Leather Accent Lounge Chair (Left Foreground) -->
+            <path d="M335,775 Q340,700 445,710 L545,725 Q595,745 580,855 L345,875 Z" fill="url(#cognacLeather)"/>
+            <rect x="365" y="800" width="205" height="65" rx="20" fill="#824927"/>
+            <line x1="375" y1="865" x2="355" y2="905" stroke="#C5A880" stroke-width="5"/>
+            <line x1="550" y1="865" x2="565" y2="905" stroke="#C5A880" stroke-width="5"/>
+
+            <!-- Sculptural Bookmatched Plinth Coffee Table (Center Foreground) -->
+            <ellipse cx="960" cy="925" rx="185" ry="28" fill="#302B26"/>
+            <rect x="820" y="885" width="280" height="45" rx="8" fill="#D8CFC0" stroke="#C5A880" stroke-width="1.5"/>
+            <ellipse cx="960" cy="885" rx="235" ry="30" fill="#F3EFE6" stroke="#C5A880" stroke-width="2"/>
+          </svg>
+        </div>
+
+        <!-- STAGE 07: Art, Hand-Knotted Silk Rug, Sculptures & Olive Tree (75% - 87.5%) -->
+        <div id="stage-7" class="renovation-layer opacity-0">
+          <svg viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice" class="w-full h-full">
+            <!-- Hand-Knotted Tibetan Wool & Bamboo Silk Area Rug (Layered visually around table) -->
+            <polygon points="410,825 1510,825 1730,1045 190,1045" fill="none" stroke="#DFD5C5" stroke-width="14" opacity="0.85"/>
+            <polygon points="435,840 1485,840 1685,1030 235,1030" fill="rgba(244,239,229,0.26)" stroke="#C5A880" stroke-width="1.5"/>
+
+            <!-- Large Museum-Grade Minimalist Textured Triptych Canvas on Back Wall -->
+            <g transform="translate(730, 250)">
+              <rect x="0" y="0" width="460" height="340" fill="#181715" stroke="#C5A880" stroke-width="4"/>
+              <rect x="14" y="14" width="432" height="312" fill="#EAE3D5"/>
+              <!-- Abstract Sculptural Relief Strokes -->
+              <circle cx="165" cy="155" r="95" fill="none" stroke="#1C1C1C" stroke-width="2.5"/>
+              <path d="M 80,260 Q 230,90 380,240" fill="none" stroke="#C5A880" stroke-width="8"/>
+              <circle cx="300" cy="120" r="38" fill="#4A3525" opacity="0.85"/>
+              <line x1="230" y1="30" x2="230" y2="295" stroke="#1C1C1C" stroke-width="1.5" opacity="0.4"/>
+            </g>
+
+            <!-- Coffee Table Styling: Assouline Art Books & Brushed Brass Sculpture -->
+            <rect x="865" y="868" width="85" height="16" rx="2" fill="#1C1C1C" stroke="#C5A880" stroke-width="1"/>
+            <rect x="872" y="856" width="72" height="12" rx="2" fill="#FAF8F5"/>
+            <!-- Ikebana Ceramic Vessel on Coffee Table -->
+            <ellipse cx="1025" cy="868" rx="26" ry="18" fill="#4A3525"/>
+            <circle cx="1025" cy="848" r="12" fill="#C5A880"/>
+
+            <!-- Architectural Mediterranean Olive Tree in Travertine Planter (Right Side) -->
+            <polygon points="1455,720 1545,720 1530,845 1470,845" fill="#D6CCB9" stroke="#B5A892" stroke-width="2"/>
+            <path d="M1500,720 Q1485,610 1515,520 Q1535,450 1485,390" fill="none" stroke="#4A3728" stroke-width="10" stroke-linecap="round"/>
+            <path d="M1505,560 Q1445,510 1420,470" fill="none" stroke="#4A3728" stroke-width="6" stroke-linecap="round"/>
+            <path d="M1512,490 Q1565,450 1595,420" fill="none" stroke="#4A3728" stroke-width="6" stroke-linecap="round"/>
+            <!-- Olive Foliage Clusters -->
+            <g fill="#5C6B57" opacity="0.92">
+              <ellipse cx="1485" cy="380" rx="65" ry="38"/>
+              <ellipse cx="1415" cy="460" rx="52" ry="30"/>
+              <ellipse cx="1590" cy="415" rx="58" ry="34"/>
+              <ellipse cx="1525" cy="435" rx="60" ry="32" fill="#72826C"/>
+              <ellipse cx="1455" cy="415" rx="48" ry="28" fill="#4B5846"/>
+            </g>
+          </svg>
+        </div>
+
+        <!-- STAGE 08: Warm Chandelier, Cove LED Illumination & Brand Reveal (87.5% - 100%) -->
+        <div id="stage-8" class="renovation-layer opacity-0">
+          <svg viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice" class="w-full h-full">
+            <defs>
+              <radialGradient id="coveGlow" cx="50%" cy="12%" r="55%">
+                <stop offset="0%" stop-color="rgba(255, 218, 160, 0.55)"/>
+                <stop offset="45%" stop-color="rgba(235, 188, 120, 0.18)"/>
+                <stop offset="100%" stop-color="rgba(0, 0, 0, 0)"/>
+              </radialGradient>
+              <radialGradient id="wallWasher" cx="50%" cy="38%" r="35%">
+                <stop offset="0%" stop-color="rgba(255, 226, 175, 0.42)"/>
+                <stop offset="100%" stop-color="rgba(0, 0, 0, 0)"/>
+              </radialGradient>
+              <radialGradient id="hearthFire" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="rgba(255, 165, 70, 0.85)"/>
+                <stop offset="60%" stop-color="rgba(225, 95, 30, 0.35)"/>
+                <stop offset="100%" stop-color="rgba(0, 0, 0, 0)"/>
+              </radialGradient>
+            </defs>
+
+            <!-- Warm Architectural Cove LED Perimeter Glow -->
+            <rect width="1920" height="1080" fill="url(#coveGlow)"/>
+            <rect width="1920" height="1080" fill="url(#wallWasher)"/>
+            <polygon points="150,22 1770,22 1530,140 390,140" fill="none" stroke="#FFE2B3" stroke-width="5" opacity="0.9"/>
+
+            <!-- Vertical LED Strip Accent Along Fluted Wood Panel -->
+            <line x1="592" y1="162" x2="592" y2="764" stroke="#FFE0AD" stroke-width="6" opacity="0.85"/>
+            <line x1="1328" y1="162" x2="1328" y2="764" stroke="#FFE0AD" stroke-width="5" opacity="0.75"/>
+
+            <!-- Bio-Ethanol Fireplace Flame Glow -->
+            <ellipse cx="1445" cy="655" rx="95" ry="65" fill="url(#hearthFire)"/>
+            <path d="M1405,670 Q1425,625 1445,665 Q1465,615 1485,670 Z" fill="#FFB357"/>
+
+            <!-- Bespoke Sculptural Bocci / Apparatus Glass & Brass Chandelier -->
+            <line x1="930" y1="42" x2="930" y2="215" stroke="#C5A880" stroke-width="2.5"/>
+            <line x1="990" y1="42" x2="990" y2="245" stroke="#C5A880" stroke-width="2.5"/>
+            <line x1="825" y1="205" x2="1095" y2="235" stroke="#C5A880" stroke-width="4"/>
+            <line x1="855" y1="245" x2="1065" y2="195" stroke="#C5A880" stroke-width="3"/>
+            <!-- Illuminated Alabaster Glass Orbs -->
+            <g fill="#FFF6E5" stroke="#C5A880" stroke-width="1.5">
+              <circle cx="825" cy="205" r="20"/>
+              <circle cx="890" cy="215" r="15"/>
+              <circle cx="960" cy="220" r="24"/>
+              <circle cx="1035" cy="228" r="16"/>
+              <circle cx="1095" cy="235" r="21"/>
+              <circle cx="855" cy="245" r="17"/>
+              <circle cx="1065" cy="195" r="18"/>
+            </g>
+          </svg>
+        </div>
+
+        <!-- X-RAY CAD BLUEPRINT LOUPE LAYER (Visible when X-Ray Mode is toggled ON) -->
+        <div id="xray-overlay" class="xray-layer absolute inset-0 bg-[#0A192F]/95 z-20">
+          <svg viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice" class="w-full h-full">
+            <defs>
+              <pattern id="cadGrid" width="40" height="40" patternUnits="userSpaceOnUse">
+                <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(100,255,218,0.16)" stroke-width="1"/>
+              </pattern>
+            </defs>
+            <rect width="1920" height="1080" fill="url(#cadGrid)"/>
+            <g stroke="#64FFDA" fill="none" stroke-width="1.5">
+              <polygon points="320,160 1600,160 1600,780 320,780"/>
+              <line x1="0" y1="0" x2="320" y2="160"/>
+              <line x1="1920" y1="0" x2="1600" y2="160"/>
+              <line x1="0" y1="1080" x2="320" y2="780"/>
+              <line x1="1920" y1="1080" x2="1600" y2="780"/>
+              <rect x="730" y="250" width="460" height="340" stroke-dasharray="6,4"/>
+              <rect x="560" y="650" width="800" height="175"/>
+              <ellipse cx="960" cy="885" rx="235" ry="30"/>
+              <circle cx="960" cy="220" r="140" stroke-dasharray="4,4"/>
+            </g>
+            <g fill="#64FFDA" font-family="JetBrains Mono" font-size="13">
+              <text x="745" y="240">ARTWORK NICHE: 2400mm x 1800mm [CRI 97+ DALI SPOT]</text>
+              <text x="570" y="638">MINOTTI HAMILTON MODULAR // 4200mm SPAN</text>
+              <text x="860" y="950">TRAVERTINE PLINTH Ø1600mm</text>
+              <text x="1340" y="565">HVAC LINEAR SLOT + BIO-HEARTH FLUE</text>
+              <text x="360" y="320">WALNUT ACOUSTIC SLATS (NRC 0.85)</text>
+            </g>
+          </svg>
+        </div>
+
+        <!-- Dark Subtle Vignette for HUD Legibility -->
+        <div class="absolute inset-0 bg-gradient-to-t from-obsidian/80 via-transparent to-obsidian/45 pointer-events-none"></div>
       </div>
 
-      <!-- X-RAY CAD BLUEPRINT OVERLAY -->
-      <div id="xray-layer" class="flex items-center justify-center">
-        <div class="w-full h-full relative p-12 font-mono-lux text-xs text-teal-300"
-             style="background-image: linear-gradient(rgba(45,212,191,0.14) 1px, transparent 1px), linear-gradient(90deg, rgba(45,212,191,0.14) 1px, transparent 1px); background-size: 40px 40px;">
-          <div class="absolute top-24 left-12 border border-teal-400/50 px-3 py-1.5 bg-black/80">
-            DAGORIYA BIM SCAN // ELEVATION +4200MM // ACOUSTIC & RCC CAVITY
-          </div>
-          <div class="absolute bottom-36 left-1/3 border border-teal-400/50 px-3 py-1.5 bg-black/80">
-            BOOKMATCHED ITALIAN CALACATTA SLAB // 20MM // FFL ±0.00
-          </div>
-          <div class="absolute top-1/3 right-24 border border-teal-400/50 px-3 py-1.5 bg-black/80">
-            HVAC LINEAR SLOT DIFFUSER + DALI 2700K COVE CIRCUIT
-          </div>
-        </div>
-      </div>
-
-      <!-- SUBTLE VIGNETTE FOR TEXT LEGIBILITY -->
-      <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/55 pointer-events-none" style="z-index: 10;"></div>
-
-      <!-- TOP BAR: BRAND + FRAME UPLOAD BUTTONS + ZOOM & FIT CONTROLS -->
-      <div class="absolute top-0 left-0 right-0 flex flex-wrap items-center justify-between gap-2 px-4 md:px-8 py-3.5 bg-black/75 backdrop-blur-md border-b border-[#C5A880]/25" style="z-index: 30;">
-        <div class="flex items-center gap-3">
-          <span class="font-serif-lux text-xl md:text-2xl tracking-[0.28em] text-[#FAF8F5] font-semibold">DAGORIYA</span>
-          <span class="hidden xl:inline-block text-[10px] font-mono-lux uppercase tracking-[0.18em] text-[#C5A880] border border-[#C5A880]/35 px-2.5 py-0.5 rounded-full">
-            4K Frame Engine
-          </span>
+      <!-- TOP FLOATING HERO HEADER & INTERACTIVE STUDIO CONTROLS -->
+      <div class="absolute top-0 left-0 right-0 z-30 flex flex-wrap items-center justify-between px-6 md:px-12 py-6 gap-4">
+        <div class="flex items-center gap-4">
+          <span class="font-serif text-xl md:text-2xl tracking-[0.28em] text-alabaster uppercase">ATELIER VELOX</span>
+          <span class="hidden sm:inline-block h-3 w-[1px] bg-gold/40"></span>
+          <span class="hidden sm:inline-block font-mono text-[11px] tracking-[0.2em] text-gold uppercase">Interactive Spatial Engine v2.4</span>
         </div>
 
-        <!-- CONTROLS TOOLBAR -->
-        <div class="flex flex-wrap items-center gap-2">
-          <!-- Load Multiple Frame Files Button -->
-          <button type="button" onclick="document.getElementById('frame-files-input').click()"
-                  class="bg-[#C5A880] hover:bg-[#DFC6A2] text-[#0B0B0A] font-mono-lux text-[11px] font-semibold uppercase tracking-wider px-3.5 py-1.5 rounded-full transition flex items-center gap-1.5 shadow-md cursor-pointer">
-            <span>📂 Select Video Frames</span>
+        <!-- LIVE ARCHITECTURAL SIMULATION TOOLBAR -->
+        <div class="flex items-center gap-2 bg-obsidian/75 backdrop-blur-md border border-gold/30 rounded-full px-3 py-1.5 text-xs">
+          <span class="font-mono text-[10px] uppercase tracking-widest text-gold/80 px-2 hidden lg:inline">Ambiance:</span>
+          <button onclick="setHeroLighting('day')" id="btn-light-day" class="px-3 py-1 rounded-full bg-gold text-obsidian font-medium transition">Daylight</button>
+          <button onclick="setHeroLighting('golden')" id="btn-light-golden" class="px-3 py-1 rounded-full text-alabaster/80 hover:text-gold transition">Golden Hour</button>
+          <button onclick="setHeroLighting('midnight')" id="btn-light-midnight" class="px-3 py-1 rounded-full text-alabaster/80 hover:text-gold transition">Midnight</button>
+          <span class="h-4 w-[1px] bg-gold/25 mx-1"></span>
+          <button onclick="toggleXrayMode()" id="btn-xray" class="px-3 py-1 rounded-full border border-emerald-400/40 text-emerald-300 font-mono text-[11px] hover:bg-emerald-400/10 transition flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> X-Ray CAD Lens
           </button>
-
-          <!-- Load Entire Folder Button -->
-          <button type="button" onclick="document.getElementById('frame-folder-input').click()"
-                  class="bg-black/90 hover:bg-[#C5A880]/20 text-[#C5A880] border border-[#C5A880]/50 font-mono-lux text-[11px] uppercase tracking-wider px-3.5 py-1.5 rounded-full transition flex items-center gap-1.5 cursor-pointer">
-            <span>📁 Select Folder</span>
-          </button>
-
-          <!-- Anti-Overzoom & Fit Controls -->
-          <div class="flex items-center bg-black/85 border border-[#C5A880]/30 rounded-full p-1 text-[11px] font-mono-lux">
-            <button type="button" onclick="setFitMode('contain')" id="fit-contain" class="px-2.5 py-1 rounded-full bg-[#C5A880] text-[#0B0B0A] font-semibold transition">Full Frame</button>
-            <button type="button" onclick="setFitMode('balanced')" id="fit-balanced" class="px-2.5 py-1 rounded-full text-[#FAF8F5]/75 hover:text-[#C5A880] transition">Balanced</button>
-            <button type="button" onclick="setFitMode('cover')" id="fit-cover" class="px-2.5 py-1 rounded-full text-[#FAF8F5]/75 hover:text-[#C5A880] transition">Fill</button>
-            <span class="text-[#C5A880]/30 px-1">|</span>
-            <button type="button" onclick="adjustZoom(-0.06)" class="px-2 py-0.5 text-[#C5A880] hover:text-white font-bold" title="Zoom Out">−</button>
-            <span id="zoom-label" class="text-[10px] text-[#FAF8F5] min-w-[36px] text-center">100%</span>
-            <button type="button" onclick="adjustZoom(0.06)" class="px-2 py-0.5 text-[#C5A880] hover:text-white font-bold" title="Zoom In">+</button>
-          </div>
-
-          <!-- Lighting & X-Ray Controls -->
-          <div class="hidden lg:flex items-center bg-black/85 border border-[#C5A880]/25 rounded-full p-1 text-[11px] font-mono-lux">
-            <button type="button" onclick="setLighting('day')" id="light-day" class="px-2.5 py-1 rounded-full bg-[#C5A880] text-[#0B0B0A] font-semibold">Day</button>
-            <button type="button" onclick="setLighting('golden')" id="light-golden" class="px-2.5 py-1 rounded-full text-[#FAF8F5]/75 hover:text-[#C5A880]">Golden</button>
-            <button type="button" onclick="setLighting('night')" id="light-night" class="px-2.5 py-1 rounded-full text-[#FAF8F5]/75 hover:text-[#C5A880]">Night</button>
-            <button type="button" onclick="toggleXray()" id="xray-btn" class="ml-1 px-2.5 py-1 rounded-full border border-teal-400/40 text-teal-300">X-Ray</button>
-          </div>
         </div>
       </div>
 
-      <!-- STAGE 08 FINAL BRAND REVEAL OVERLAY (Appears at 87.5% - 100% Scroll) -->
-      <div id="final-reveal-overlay" class="absolute inset-0 flex flex-col items-center justify-center text-center px-6 pointer-events-none opacity-0 transition-all duration-700 transform translate-y-6" style="z-index: 20;">
-        <div class="bg-black/75 backdrop-blur-md border border-[#C5A880]/45 px-8 md:px-14 py-9 max-w-2xl shadow-2xl">
-          <p class="font-mono-lux text-xs uppercase tracking-[0.35em] text-[#C5A880] mb-3">08 / Illumination & Final Reveal</p>
-          <h1 class="font-serif-lux text-5xl md:text-7xl tracking-[0.22em] text-[#FAF8F5] uppercase mb-3">DAGORIYA</h1>
-          <p class="font-serif-lux italic text-lg md:text-2xl text-[#C5A880]/90 mb-6">
-            “Where raw architectural volume evolves frame-by-frame into timeless living couture.”
-          </p>
-          <div class="flex flex-wrap justify-center gap-3 pointer-events-auto">
-            <a href="#editorial-start" class="inline-block bg-[#C5A880] text-[#0B0B0A] font-mono-lux text-xs font-semibold uppercase tracking-[0.22em] px-7 py-3.5 rounded-full hover:bg-[#FAF8F5] transition">
-              Explore Portfolio ↓
-            </a>
-            <button type="button" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="inline-block bg-black/70 text-[#FAF8F5] border border-[#C5A880]/40 font-mono-lux text-xs uppercase tracking-[0.2em] px-6 py-3.5 rounded-full hover:border-[#C5A880] transition">
-              Replay Renovation ↺
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- RIGHT SIDE: 8-STEP VERTICAL PROGRESS BAR -->
-      <div class="absolute right-4 md:right-7 top-1/2 -translate-y-1/2 flex flex-col items-end bg-black/65 backdrop-blur-md border border-[#C5A880]/25 px-3 py-4 rounded-2xl" style="z-index: 30;">
-        <div id="step-indicators" class="flex flex-col gap-2.5"></div>
-      </div>
-
-      <!-- BOTTOM-LEFT: MINIMIZABLE STAGE HUD CARD -->
-      <div id="hud-wrapper" class="absolute bottom-5 left-4 md:left-8" style="z-index: 30;">
-        <!-- Expanded HUD Card -->
-        <div id="hud-card-expanded" class="w-[92vw] max-w-lg bg-black/80 backdrop-blur-md border border-[#C5A880]/35 border-l-4 border-l-[#C5A880] rounded-xl p-4 md:p-5 text-[#FAF8F5] shadow-2xl transition-all duration-300">
-          <div class="flex items-center justify-between gap-2 mb-1.5">
-            <div class="flex items-center gap-2 font-mono-lux text-[11px] text-[#C5A880] uppercase tracking-widest">
-              <span id="hud-stage-num">STAGE 01 / 08</span>
-              <span>•</span>
-              <span id="hud-frame-counter">FRAME 001 / 120</span>
-              <span>•</span>
-              <span id="hud-scroll-pct">0%</span>
-            </div>
-
-            <!-- MINIMIZE BUTTON -->
-            <button type="button" onclick="toggleHudMinimize(true)"
-                    class="bg-white/10 hover:bg-[#C5A880] text-[#FAF8F5] hover:text-[#0B0B0A] border border-[#C5A880]/40 font-mono-lux text-[10px] uppercase tracking-wider px-2.5 py-1 rounded-full transition cursor-pointer">
-              — Minimize
-            </button>
-          </div>
-
-          <h2 id="hud-stage-title" class="font-serif-lux text-2xl md:text-3xl text-[#FAF8F5] tracking-wide mb-1">
-            01 / Raw Architectural Space
-          </h2>
-          <p id="hud-stage-desc" class="text-xs text-[#FAF8F5]/75 font-light leading-relaxed">
-            Un-renovated concrete & brick structural shell with laser elevation markers.
-          </p>
-
-          <div class="mt-3 pt-2.5 border-t border-white/10 flex flex-wrap items-center justify-between gap-2">
-            <span id="frame-source-badge" class="font-mono-lux text-[10px] text-emerald-400 uppercase tracking-wider">
-              ⚡ Built-in 3D Engine Active (Click "Select Video Frames" above)
-            </span>
-            <div class="flex items-center gap-1.5">
-              <button type="button" onclick="stepStage(-1)" class="px-2.5 py-1 bg-white/10 hover:bg-[#C5A880] hover:text-black rounded font-mono-lux text-[10px] transition">← Prev</button>
-              <button type="button" onclick="stepStage(1)" class="px-2.5 py-1 bg-white/10 hover:bg-[#C5A880] hover:text-black rounded font-mono-lux text-[10px] transition">Next →</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Minimized Compact Pill (Shown when user clicks Minimize) -->
-        <div id="hud-card-minimized" class="hidden items-center gap-3 bg-black/85 backdrop-blur-md border border-[#C5A880]/50 rounded-full px-4 py-2.5 text-[#FAF8F5] shadow-2xl">
-          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-          <span id="hud-min-text" class="font-mono-lux text-xs text-[#C5A880] tracking-wider uppercase">STAGE 01 / 08 • 0%</span>
-          <button type="button" onclick="toggleHudMinimize(false)"
-                  class="bg-[#C5A880] text-[#0B0B0A] font-mono-lux text-[10px] font-semibold uppercase tracking-wider px-3 py-1 rounded-full hover:bg-white transition cursor-pointer">
-            + Expand HUD
-          </button>
-        </div>
-      </div>
-
-      <!-- BOTTOM-RIGHT: SKIP INTRO BUTTON -->
-      <a href="#editorial-start" class="absolute bottom-5 right-4 md:right-8 bg-[#FAF8F5] hover:bg-[#C5A880] text-[#0B0B0A] font-mono-lux text-xs font-semibold uppercase tracking-[0.2em] px-5 py-3 rounded-full shadow-xl transition flex items-center gap-2" style="z-index: 30;">
-        <span>Skip Intro</span>
-        <span>↓</span>
-      </a>
-    </div>
-  </section>
-
-  <!-- =================================================================
-       PART 2: MONICA KHANNA STYLE EDITORIAL PORTFOLIO & TOOLS
-       ================================================================= -->
-  <div id="editorial-start"></div>
-
-  <!-- STICKY MINIMAL DUAL-TIER NAVBAR -->
-  <header class="sticky top-0 z-50 bg-[#FAF8F5]/95 backdrop-blur-md border-b border-black/10">
-    <div class="max-w-7xl mx-auto px-4 md:px-8 py-4 flex flex-col items-center">
-      <a href="#" class="font-serif-lux text-3xl md:text-4xl tracking-[0.28em] text-[#1C1C1C] font-semibold uppercase">DAGORIYA</a>
-      <p class="font-mono-lux text-[10px] tracking-[0.3em] text-[#9A7B50] uppercase mt-0.5">Architecture • Interiors • Bespoke Curation</p>
-
-      <nav class="flex flex-wrap justify-center gap-5 md:gap-8 text-xs uppercase tracking-[0.18em] text-[#1C1C1C]/80 mt-4 font-medium">
-        <a href="#hero-scroll-container" class="hover:text-[#9A7B50] transition">Home</a>
-        <a href="#philosophy" class="hover:text-[#9A7B50] transition">Philosophy</a>
-        <a href="#before-after-section" class="hover:text-[#9A7B50] transition">Transformation</a>
-        <a href="#floorplan-section" class="hover:text-[#9A7B50] transition">Spatial Plan</a>
-        <a href="#portfolio-chapters" class="hover:text-[#9A7B50] transition">Portfolio</a>
-        <a href="#cost-estimator" class="hover:text-[#9A7B50] transition">Cost Estimator</a>
-        <a href="#contact-footer" class="hover:text-[#9A7B50] transition">Contact</a>
-      </nav>
-    </div>
-
-    <!-- Secondary Quick-Jump Bar -->
-    <div class="bg-[#F2ECE1] border-t border-black/10 py-2 px-4">
-      <div class="max-w-5xl mx-auto flex flex-wrap justify-center items-center gap-3 md:gap-6 text-[11px] font-mono-lux uppercase tracking-[0.18em] text-[#1C1C1C]/80">
-        <a href="#sec-apartments" class="hover:text-[#9A7B50] transition">Apartments</a>
-        <span class="text-[#C5A880]">|</span>
-        <a href="#sec-farmhouses" class="hover:text-[#9A7B50] transition">Farmhouses & Villas</a>
-        <span class="text-[#C5A880]">|</span>
-        <a href="#sec-offices" class="hover:text-[#9A7B50] transition">Office Interiors</a>
-        <span class="text-[#C5A880]">|</span>
-        <a href="#sec-hospitality" class="hover:text-[#9A7B50] transition">Hospitality</a>
-      </div>
-    </div>
-  </header>
-
-  <!-- PHILOSOPHY & 3 PILLARS SECTION -->
-  <section id="philosophy" class="py-24 px-6 md:px-12 max-w-7xl mx-auto text-center">
-    <p class="font-mono-lux text-xs uppercase tracking-[0.3em] text-[#9A7B50] mb-4">The Dagoriya Ethos</p>
-    <blockquote class="font-serif-lux italic text-3xl md:text-5xl text-[#1C1C1C] max-w-4xl mx-auto leading-tight mb-6">
-      “Good design yearns for boundless style that is underlined by simplicity.”
-    </blockquote>
-    <p class="max-w-2xl mx-auto text-[#1C1C1C]/70 font-light leading-relaxed mb-16">
-      At Dagoriya, every residence, private estate, and flagship hospitality space is conceived as an heirloom—uniting raw architectural honesty with tactile Italian stone, bespoke millwork, and dramatic illumination.
-    </p>
-
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-left">
-      <div class="group bg-white border border-black/10 p-8 hover:border-[#C5A880] transition duration-500 shadow-sm">
-        <span class="font-mono-lux text-xs text-[#9A7B50]">PILLAR 01</span>
-        <h3 class="font-serif-lux text-3xl mt-2 mb-3 group-hover:text-[#9A7B50] transition">Residential Sanctuaries</h3>
-        <p class="text-sm text-[#1C1C1C]/70 leading-relaxed mb-6">Turnkey bare-shell sky penthouses and sprawling country estates tailored to private collectors.</p>
-        <a href="#sec-apartments" class="font-mono-lux text-xs uppercase tracking-widest text-[#1C1C1C] border-b border-[#C5A880] pb-1">Explore Residences →</a>
-      </div>
-      <div class="group bg-white border border-black/10 p-8 hover:border-[#C5A880] transition duration-500 shadow-sm">
-        <span class="font-mono-lux text-xs text-[#9A7B50]">PILLAR 02</span>
-        <h3 class="font-serif-lux text-3xl mt-2 mb-3 group-hover:text-[#9A7B50] transition">Executive Office Interiors</h3>
-        <p class="text-sm text-[#1C1C1C]/70 leading-relaxed mb-6">Acoustic-grade private family offices, boardrooms, and headquarters crafted for quiet authority.</p>
-        <a href="#sec-offices" class="font-mono-lux text-xs uppercase tracking-widest text-[#1C1C1C] border-b border-[#C5A880] pb-1">Explore Workspaces →</a>
-      </div>
-      <div class="group bg-white border border-black/10 p-8 hover:border-[#C5A880] transition duration-500 shadow-sm">
-        <span class="font-mono-lux text-xs text-[#9A7B50]">PILLAR 03</span>
-        <h3 class="font-serif-lux text-3xl mt-2 mb-3 group-hover:text-[#9A7B50] transition">Bespoke Hospitality</h3>
-        <p class="text-sm text-[#1C1C1C]/70 leading-relaxed mb-6">Boutique heritage resorts, private members' clubs, and Michelin-caliber dining environments.</p>
-        <a href="#sec-hospitality" class="font-mono-lux text-xs uppercase tracking-widest text-[#1C1C1C] border-b border-[#C5A880] pb-1">Explore Hospitality →</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- INTERACTIVE BEFORE / AFTER TRANSFORMATION SLIDER -->
-  <section id="before-after-section" class="py-20 bg-[#0B0B0A] text-[#FAF8F5] px-6 md:px-12">
-    <div class="max-w-6xl mx-auto">
-      <div class="flex flex-col md:flex-row md:items-end justify-between mb-10">
-        <div>
-          <p class="font-mono-lux text-xs uppercase tracking-[0.3em] text-[#C5A880] mb-2">Interactive Site Inspection</p>
-          <h2 class="font-serif-lux text-4xl md:text-5xl">Bare-Shell vs. Handover Reality</h2>
-        </div>
-        <p class="text-sm text-[#FAF8F5]/60 font-mono-lux mt-2 md:mt-0">← Drag Center Handle to Compare →</p>
-      </div>
-
-      <div id="ba-wrapper" class="relative w-full h-[380px] md:h-[520px] overflow-hidden select-none border border-[#C5A880]/30 cursor-ew-resize">
-        <img src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1800&q=85"
-             alt="Completed Dagoriya Interior" class="absolute inset-0 w-full h-full object-cover pointer-events-none" />
-        <span class="absolute top-4 right-4 z-10 bg-black/80 text-[#C5A880] font-mono-lux text-xs uppercase px-3 py-1 border border-[#C5A880]/40">
-          Stage 08 / Completed Handover
-        </span>
-
-        <div id="ba-before-clip" class="absolute inset-0 w-1/2 overflow-hidden">
-          <img src="https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1800&q=80"
-               alt="Raw Concrete Shell" class="absolute inset-0 w-full h-full object-cover filter grayscale contrast-125 brightness-75 pointer-events-none" style="width: 100vw; max-width: 72rem;" />
-          <span class="absolute top-4 left-4 z-10 bg-black/80 text-[#FAF8F5] font-mono-lux text-xs uppercase px-3 py-1 border border-white/30">
-            Stage 01 / Raw Civil Shell
-          </span>
-        </div>
-
-        <div id="ba-handle" class="absolute top-0 bottom-0 left-1/2 w-0.5 bg-[#C5A880] z-20 pointer-events-none">
-          <div class="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-11 h-11 rounded-full bg-[#C5A880] text-[#0B0B0A] flex items-center justify-center font-mono-lux text-xs font-bold shadow-xl">
-            ↔
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- INTERACTIVE 2D ARCHITECTURAL FLOORPLAN EXPLORER -->
-  <section id="floorplan-section" class="py-24 px-6 md:px-12 max-w-7xl mx-auto">
-    <div class="text-center mb-14">
-      <p class="font-mono-lux text-xs uppercase tracking-[0.3em] text-[#9A7B50] mb-2">Interactive Spatial Blueprint</p>
-      <h2 class="font-serif-lux text-4xl md:text-5xl">Explore The 8,500 Sq.Ft. Sky Villa Layout</h2>
-      <p class="text-sm text-[#1C1C1C]/70 mt-2">Click on any pulsing gold marker on the architectural plan to inspect room specifications.</p>
-    </div>
-
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-      <div class="lg:col-span-7 relative bg-[#11161B] border border-[#C5A880]/40 p-6 md:p-10 text-[#FAF8F5]">
-        <svg viewBox="0 0 800 500" class="w-full h-auto">
-          <rect x="20" y="20" width="760" height="460" fill="none" stroke="#C5A880" stroke-width="2" opacity="0.6"/>
-          <line x1="340" y1="20" x2="340" y2="310" stroke="#C5A880" stroke-width="1.5" opacity="0.5"/>
-          <line x1="20" y1="310" x2="780" y2="310" stroke="#C5A880" stroke-width="1.5" opacity="0.5"/>
-          <line x1="560" y1="20" x2="560" y2="480" stroke="#C5A880" stroke-width="1.5" opacity="0.5"/>
-          <g font-family="JetBrains Mono" font-size="11" fill="#C5A880" opacity="0.8">
-            <text x="120" y="160">01 // GRAND SALON</text>
-            <text x="390" y="160">02 // DINING & WINE VAULT</text>
-            <text x="600" y="160">03 // PRIMARY SUITE</text>
-            <text x="220" y="405">04 // PRIVATE WRAP-AROUND DECK</text>
-          </g>
-        </svg>
-
-        <button type="button" onclick="selectFloorRoom(0)" class="pin-pulse absolute top-[32%] left-[22%] w-8 h-8 rounded-full bg-[#C5A880] text-[#0B0B0A] font-mono-lux text-xs font-bold flex items-center justify-center">01</button>
-        <button type="button" onclick="selectFloorRoom(1)" class="pin-pulse absolute top-[32%] left-[55%] w-8 h-8 rounded-full bg-[#C5A880] text-[#0B0B0A] font-mono-lux text-xs font-bold flex items-center justify-center">02</button>
-        <button type="button" onclick="selectFloorRoom(2)" class="pin-pulse absolute top-[32%] left-[78%] w-8 h-8 rounded-full bg-[#C5A880] text-[#0B0B0A] font-mono-lux text-xs font-bold flex items-center justify-center">03</button>
-        <button type="button" onclick="selectFloorRoom(3)" class="pin-pulse absolute top-[76%] left-[38%] w-8 h-8 rounded-full bg-[#C5A880] text-[#0B0B0A] font-mono-lux text-xs font-bold flex items-center justify-center">04</button>
-      </div>
-
-      <div class="lg:col-span-5 bg-white border border-black/15 p-6 md:p-8 shadow-sm">
-        <img id="fp-img" src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1000&q=80" class="w-full h-56 object-cover mb-5" alt="Room Preview" />
-        <div class="flex justify-between items-center font-mono-lux text-xs text-[#9A7B50] mb-1">
-          <span id="fp-code">ZONE 01 // LIVING</span>
-          <span id="fp-area">2,400 SQ.FT.</span>
-        </div>
-        <h3 id="fp-title" class="font-serif-lux text-3xl text-[#1C1C1C] mb-2">The Double-Height Grand Salon</h3>
-        <p id="fp-desc" class="text-sm text-[#1C1C1C]/70 leading-relaxed mb-4">
-          Bookmatched Italian Calacatta Gold flooring paired with acoustic fluted American walnut walls and a custom 4.2m curved bouclé sofa.
-        </p>
-        <div id="fp-materials" class="flex flex-wrap gap-2 font-mono-lux text-[11px]"></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- 4 FULL-BLEED PARALLAX PORTFOLIO CHAPTERS -->
-  <div id="portfolio-chapters"></div>
-
-  <!-- INTERACTIVE 60-SECOND INTERIOR BOQ & COST ESTIMATOR -->
-  <section id="cost-estimator" class="py-24 px-6 md:px-12 bg-[#0B0B0A] text-[#FAF8F5]">
-    <div class="max-w-5xl mx-auto border border-[#C5A880]/30 p-8 md:p-14 bg-[#121210]">
-      <div class="text-center mb-10">
-        <p class="font-mono-lux text-xs uppercase tracking-[0.3em] text-[#C5A880] mb-2">Instant Turnkey BOQ Valuation</p>
-        <h2 class="font-serif-lux text-4xl md:text-5xl">60-Second Interior Cost Estimator</h2>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div>
-          <label class="block font-mono-lux text-xs uppercase text-[#C5A880] mb-2">1. Property Type</label>
-          <select id="est-type" onchange="updateEstimate()" class="w-full bg-[#0B0B0A] border border-[#C5A880]/40 px-4 py-3 text-sm text-[#FAF8F5] focus:outline-none">
-            <option value="Sky Apartment / Penthouse">Sky Apartment / Penthouse</option>
-            <option value="Farmhouse / Luxury Villa">Farmhouse / Luxury Villa</option>
-            <option value="Executive Office / HQ">Executive Office / HQ</option>
-            <option value="Boutique Hospitality">Boutique Hospitality</option>
-          </select>
-        </div>
-
-        <div>
-          <label class="block font-mono-lux text-xs uppercase text-[#C5A880] mb-2">2. Specification Tier</label>
-          <select id="est-rate" onchange="updateEstimate()" class="w-full bg-[#0B0B0A] border border-[#C5A880]/40 px-4 py-3 text-sm text-[#FAF8F5] focus:outline-none">
-            <option value="4500">Signature Luxury (₹4,500 / sq.ft)</option>
-            <option value="7500" selected>Bespoke Italian Couture (₹7,500 / sq.ft)</option>
-            <option value="12000">Ultra-Collector Edition (₹12,000 / sq.ft)</option>
-          </select>
-        </div>
-
-        <div>
-          <label class="block font-mono-lux text-xs uppercase text-[#C5A880] mb-2">
-            3. Carpet Area: <span id="est-area-label" class="text-[#FAF8F5]">4,500 sq.ft</span>
-          </label>
-          <input type="range" id="est-area" min="1200" max="20000" step="100" value="4500" oninput="updateEstimate()" class="w-full accent-[#C5A880] mt-3 cursor-pointer" />
-        </div>
-      </div>
-
-      <div class="border-t border-b border-[#C5A880]/20 py-6 my-6 grid grid-cols-2 md:grid-cols-4 gap-4 text-center font-mono-lux text-xs">
-        <div>
-          <span class="text-[#FAF8F5]/50 block">CIVIL & MARBLE (35%)</span>
-          <span id="boq-civil" class="text-[#C5A880] text-base mt-1 block">₹1.18 Cr</span>
-        </div>
-        <div>
-          <span class="text-[#FAF8F5]/50 block">MILLWORK & WARDROBES (25%)</span>
-          <span id="boq-millwork" class="text-[#C5A880] text-base mt-1 block">₹84.3 L</span>
-        </div>
-        <div>
-          <span class="text-[#FAF8F5]/50 block">ITALIAN FURNITURE (25%)</span>
-          <span id="boq-furniture" class="text-[#C5A880] text-base mt-1 block">₹84.3 L</span>
-        </div>
-        <div>
-          <span class="text-[#FAF8F5]/50 block">LIGHTING & AUTOMATION (15%)</span>
-          <span id="boq-lighting" class="text-[#C5A880] text-base mt-1 block">₹50.6 L</span>
-        </div>
-      </div>
-
-      <div class="flex flex-col md:flex-row items-center justify-between gap-6">
-        <div>
-          <span class="font-mono-lux text-xs uppercase tracking-widest text-[#FAF8F5]/60">Estimated Turnkey Investment</span>
-          <div id="est-total" class="font-serif-lux text-4xl md:text-5xl text-[#C5A880] mt-1">₹3.38 Cr*</div>
-        </div>
-        <button type="button" onclick="sendWhatsAppEstimate()" class="w-full md:w-auto bg-[#C5A880] hover:bg-[#FAF8F5] text-[#0B0B0A] font-mono-lux text-xs uppercase tracking-[0.2em] font-semibold px-8 py-4 transition cursor-pointer">
-          Send BOQ Estimate to WhatsApp →
-        </button>
-      </div>
-    </div>
-  </section>
-
-  <!-- FOOTER -->
-  <footer id="contact-footer" class="bg-[#0B0B0A] text-[#FAF8F5] border-t border-[#C5A880]/20 py-16 px-6 md:px-12 text-center">
-    <h2 class="font-serif-lux text-4xl tracking-[0.3em] uppercase mb-2">DAGORIYA</h2>
-    <p class="font-mono-lux text-xs text-[#C5A880] tracking-[0.25em] uppercase mb-6">New Delhi • Mumbai • Agra • Dubai • Milan</p>
-    <p class="text-xs text-[#FAF8F5]/50 font-mono-lux">© 2026 DAGORIYA ARCHITECTURE & INTERIOR COUTURE. ALL RIGHTS RESERVED.</p>
-  </footer>
-
-  <!-- FULLSCREEN LIGHTBOX MODAL -->
-  <div id="lightbox" onclick="closeLightbox()" class="fixed inset-0 bg-black/95 z-50 hidden items-center justify-center p-4 cursor-zoom-out">
-    <img id="lightbox-img" src="" class="max-h-[88vh] max-w-[92vw] object-contain border border-[#C5A880]/40" alt="Enlarged View" />
-  </div>
-
-  <!-- =================================================================
-       JAVASCRIPT: INSTANT 486+ FRAME STREAMING ENGINE + UI LOGIC
-       ================================================================= -->
-  <script>
-    const STAGES = [
-      { num: "01", title: "01 / Raw Architectural Space", desc: "Un-renovated concrete & brick structural shell with laser elevation markers." },
-      { num: "02", title: "02 / Wall Finishes & Base Coat", desc: "Smooth plastered warm alabaster walls & acoustic gypsum lining." },
-      { num: "03", title: "03 / Ceiling Architecture", desc: "Recessed gypsum coffered false ceiling with linear HVAC diffuser slots." },
-      { num: "04", title: "04 / Bespoke Flooring", desc: "Chevron smoked oak hardwood & bookmatched Italian Calacatta marble border." },
-      { num: "05", title: "05 / Custom Millwork & Drapery", desc: "Fluted walnut paneling, Parisian boiserie moldings & floor-to-ceiling Belgian linen sheers." },
-      { num: "06", title: "06 / Curated Luxury Furniture", desc: "Italian curved modular bouclé sofa, cognac lounge chair & travertine plinth table." },
-      { num: "07", title: "07 / Art & Styling", desc: "Hand-knotted silk rug, museum-grade relief canvas, sculptures & Mediterranean olive tree." },
-      { num: "08", title: "08 / Illumination & Final Reveal", desc: "2700K architectural cove LEDs, sculptural glass chandelier & Dagoriya signature reveal." }
-    ];
-
-    const canvas = document.getElementById('renovation-canvas');
-    const ctx = canvas.getContext('2d');
-    const userFrameImg = document.getElementById('user-frame-img');
-    const userFrameBackdrop = document.getElementById('user-frame-backdrop');
-    const mediaWrap = document.getElementById('stage-media-wrap');
-
-    let frameBlobUrls = [];       // Instant Blob URLs for 486+ frames
-    let preloadedCache = {};      // Sliding window Image cache for zero-flicker scrubbing
-    let lastRenderedFrameIdx = -1;
-    let currentScrollProgress = 0;
-    let targetScrollProgress = 0;
-    let currentZoom = 1.0;
-
-    function resizeCanvas() {
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      canvas.width = window.innerWidth * dpr;
-      canvas.height = window.innerHeight * dpr;
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    }
-    window.addEventListener('resize', resizeCanvas);
-    resizeCanvas();
-
-    // Build 8-Step Vertical Progress Bar
-    const stepContainer = document.getElementById('step-indicators');
-    STAGES.forEach((st, idx) => {
-      const btn = document.createElement('button');
-      btn.type = "button";
-      btn.className = "group flex items-center justify-end gap-2 text-right focus:outline-none cursor-pointer";
-      btn.onclick = () => jumpToStage(idx);
-      btn.innerHTML = `
-        <span id="step-label-${idx}" class="font-mono-lux text-[10px] tracking-widest uppercase text-white/40 group-hover:text-[#C5A880] transition">${st.num}</span>
-        <span id="step-bar-${idx}" class="w-5 h-0.5 bg-white/25 transition-all duration-300"></span>
-      `;
-      stepContainer.appendChild(btn);
-    });
-
-    function jumpToStage(stageIndex) {
-      const container = document.getElementById('hero-scroll-container');
-      const maxScroll = container.offsetHeight - window.innerHeight;
-      const targetY = container.offsetTop + (stageIndex / 7.92) * maxScroll;
-      window.scrollTo({ top: targetY, behavior: 'smooth' });
-    }
-
-    function stepStage(delta) {
-      const currentStage = Math.min(7, Math.floor(currentScrollProgress * 8));
-      const nextStage = Math.max(0, Math.min(7, currentStage + delta));
-      jumpToStage(nextStage);
-    }
-
-    // Minimize / Expand HUD Toggle
-    function toggleHudMinimize(minimize) {
-      const exp = document.getElementById('hud-card-expanded');
-      const min = document.getElementById('hud-card-minimized');
-      if (minimize) {
-        exp.classList.add('hidden');
-        min.classList.remove('hidden');
-        min.classList.add('flex');
-      } else {
-        min.classList.add('hidden');
-        min.classList.remove('flex');
-        exp.classList.remove('hidden');
-      }
-    }
-
-    // Zoom & Fit Controls (Prevents Over-Zoom and Blurriness)
-    function setFitMode(mode) {
-      ['contain', 'balanced', 'cover'].forEach(m => {
-        const b = document.getElementById(`fit-${m}`);
-        if (b) {
-          b.className = (m === mode)
-            ? "px-2.5 py-1 rounded-full bg-[#C5A880] text-[#0B0B0A] font-semibold transition"
-            : "px-2.5 py-1 rounded-full text-[#FAF8F5]/75 hover:text-[#C5A880] transition";
-        }
-      });
-
-      if (mode === 'contain') {
-        userFrameImg.style.objectFit = 'contain';
-        currentZoom = 1.0;
-      } else if (mode === 'balanced') {
-        userFrameImg.style.objectFit = 'contain';
-        currentZoom = 1.08;
-      } else {
-        userFrameImg.style.objectFit = 'cover';
-        currentZoom = 1.0;
-      }
-      applyZoomTransform();
-    }
-
-    function adjustZoom(delta) {
-      currentZoom = Math.max(0.7, Math.min(1.5, +(currentZoom + delta).toFixed(2)));
-      applyZoomTransform();
-    }
-
-    function applyZoomTransform() {
-      userFrameImg.style.transform = `scale(${currentZoom})`;
-      document.getElementById('zoom-label').textContent = `${Math.round(currentZoom * 100)}%`;
-    }
-
-    // INSTANT 486+ VIDEO FRAME LOADER (0.01s Activation via Blob URLs)
-    function handleSelectedFiles(fileList) {
-      if (!fileList || !fileList.length) return;
-
-      const imageRegex = /\.(jpe?g|png|webp|avif|bmp|gif)$/i;
-      const files = Array.from(fileList).filter(f =>
-        (f.type && f.type.startsWith('image/')) || imageRegex.test(f.name)
-      );
-
-      if (!files.length) {
-        alert("No image frames found in selection. Please select JPG, PNG, or WebP frame files.");
-        return;
-      }
-
-      // Natural sort so frame_1, frame_2 ... frame_486 stay in exact order
-      files.sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' }));
-
-      // Clean up old Blob URLs if any
-      frameBlobUrls.forEach(u => URL.revokeObjectURL(u));
-      preloadedCache = {};
-
-      // Create instant Blob URLs (takes < 5ms even for 500+ files)
-      frameBlobUrls = files.map(file => URL.createObjectURL(file));
-      lastRenderedFrameIdx = -1;
-
-      // Switch viewport from Fallback Canvas to Native 4K GPU Image Layer immediately
-      canvas.style.display = 'none';
-      userFrameBackdrop.style.display = 'block';
-      userFrameImg.style.display = 'block';
-
-      document.getElementById('frame-source-badge').textContent =
-        `✅ Custom Video Sequence Active (${frameBlobUrls.length} Frames Loaded — Scroll to Scrub!)`;
-
-      // Force immediate display of current frame
-      renderCurrentFrame(true);
-    }
-
-    document.getElementById('frame-files-input').addEventListener('change', e => handleSelectedFiles(e.target.files));
-    document.getElementById('frame-folder-input').addEventListener('change', e => handleSelectedFiles(e.target.files));
-
-    // Also allow Drag & Drop of frames anywhere on the hero
-    window.addEventListener('dragover', e => e.preventDefault());
-    window.addEventListener('drop', e => {
-      e.preventDefault();
-      if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length) {
-        handleSelectedFiles(e.dataTransfer.files);
-      }
-    });
-
-    // Sliding-Window Preloader around current frame for buttery-smooth scrubbing
-    function preloadWindowAround(centerIdx) {
-      const total = frameBlobUrls.length;
-      if (!total) return;
-      const radius = 18;
-      for (let i = Math.max(0, centerIdx - radius); i <= Math.min(total - 1, centerIdx + radius); i++) {
-        if (!preloadedCache[i]) {
-          const img = new Image();
-          img.decoding = 'async';
-          img.src = frameBlobUrls[i];
-          preloadedCache[i] = img;
-        }
-      }
-    }
-
-    // Built-in 120-Frame Procedural Architectural Room (Shown before user selects their frames)
-    function drawProceduralRoom(progress, w, h) {
-      const p = Math.max(0, Math.min(1, progress));
-      const stageFloat = p * 8;
-      const s2 = Math.min(1, Math.max(0, stageFloat - 1));
-      const s3 = Math.min(1, Math.max(0, stageFloat - 2));
-      const s4 = Math.min(1, Math.max(0, stageFloat - 3));
-      const s5 = Math.min(1, Math.max(0, stageFloat - 4));
-      const s6 = Math.min(1, Math.max(0, stageFloat - 5));
-      const s7 = Math.min(1, Math.max(0, stageFloat - 6));
-      const s8 = Math.min(1, Math.max(0, stageFloat - 7));
-
-      ctx.clearRect(0, 0, w, h);
-      const bx1 = w * 0.18, by1 = h * 0.16, bx2 = w * 0.82, by2 = h * 0.74;
-
-      // Walls
-      ctx.fillStyle = s2 > 0 ? `rgb(${32 + s2*202}, ${30 + s2*194}, ${28 + s2*180})` : '#1F1D1B';
-      ctx.fillRect(0, 0, w, h);
-      ctx.fillStyle = s2 > 0 ? `rgb(${38 + s2*196}, ${35 + s2*188}, ${32 + s2*172})` : '#282522';
-      ctx.fillRect(bx1, by1, bx2 - bx1, by2 - by1);
-
-      if (s2 < 1) {
-        ctx.strokeStyle = `rgba(197, 168, 128, ${(1 - s2) * 0.25})`;
-        ctx.lineWidth = 1;
-        for (let x = bx1; x <= bx2; x += 60) { ctx.beginPath(); ctx.moveTo(x, by1); ctx.lineTo(x, by2); ctx.stroke(); }
-        for (let y = by1; y <= by2; y += 45) { ctx.beginPath(); ctx.moveTo(bx1, y); ctx.lineTo(bx2, y); ctx.stroke(); }
-      }
-
-      // Ceiling
-      ctx.fillStyle = s3 > 0 ? `rgb(${25 + s3*215}, ${24 + s3*208}, ${22 + s3*195})` : '#161513';
-      ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(w,0); ctx.lineTo(bx2, by1); ctx.lineTo(bx1, by1); ctx.closePath(); ctx.fill();
-      if (s3 > 0.05) {
-        ctx.strokeStyle = `rgba(197,168,128,${s3})`;
-        ctx.lineWidth = 2;
-        ctx.strokeRect(w * 0.24, h * 0.04, w * 0.52, h * 0.09);
-      }
-
-      // Flooring
-      ctx.fillStyle = s4 > 0 ? `rgb(${36 + s4*98}, ${34 + s4*64}, ${30 + s4*35})` : '#22201D';
-      ctx.beginPath(); ctx.moveTo(bx1, by2); ctx.lineTo(bx2, by2); ctx.lineTo(w, h); ctx.lineTo(0, h); ctx.closePath(); ctx.fill();
-
-      // Millwork & Curtains
-      if (s5 > 0.01) {
-        ctx.save(); ctx.globalAlpha = s5;
-        ctx.fillStyle = '#3E2B1D';
-        ctx.fillRect(bx1 + 20, by1, (bx2 - bx1) * 0.18, by2 - by1);
-        ctx.fillStyle = 'rgba(248, 244, 236, 0.85)';
-        ctx.fillRect(bx2 - (bx2 - bx1) * 0.14, by1, (bx2 - bx1) * 0.14, by2 - by1);
-        ctx.restore();
-      }
-
-      // Furniture
-      if (s6 > 0.01) {
-        ctx.save(); ctx.globalAlpha = s6;
-        const sofaW = (bx2 - bx1) * 0.56, sofaX = (w - sofaW) / 2, sofaY = by2 - h * 0.09;
-        ctx.fillStyle = '#EFECE6';
-        ctx.fillRect(sofaX, sofaY, sofaW, h * 0.11);
-        ctx.fillStyle = '#C5A880';
-        ctx.fillRect(sofaX + 10, sofaY + h * 0.105, sofaW - 20, 5);
-        ctx.restore();
-      }
-
-      // Art & Styling
-      if (s7 > 0.01) {
-        ctx.save(); ctx.globalAlpha = s7;
-        const artW = (bx2 - bx1) * 0.34, artH = (by2 - by1) * 0.52;
-        const artX = (w - artW) / 2, artY = by1 + (by2 - by1) * 0.14;
-        ctx.fillStyle = '#181715';
-        ctx.fillRect(artX, artY, artW, artH);
-        ctx.strokeStyle = '#C5A880'; ctx.lineWidth = 3;
-        ctx.strokeRect(artX, artY, artW, artH);
-        ctx.restore();
-      }
-
-      // Chandelier & Warm Glow
-      if (s8 > 0.01) {
-        ctx.save(); ctx.globalAlpha = s8;
-        const grad = ctx.createRadialGradient(w/2, h*0.22, 10, w/2, h*0.35, w*0.55);
-        grad.addColorStop(0, 'rgba(255, 220, 155, 0.55)');
-        grad.addColorStop(1, 'rgba(0,0,0,0)');
-        ctx.fillStyle = grad;
-        ctx.fillRect(0, 0, w, h);
-        ctx.restore();
-      }
-    }
-
-    window.addEventListener('scroll', () => {
-      const container = document.getElementById('hero-scroll-container');
-      const rect = container.getBoundingClientRect();
-      const totalScrollable = container.offsetHeight - window.innerHeight;
-      targetScrollProgress = Math.max(0, Math.min(1, (-rect.top) / totalScrollable));
-    }, { passive: true });
-
-    function renderCurrentFrame(force) {
-      const totalFrames = frameBlobUrls.length > 0 ? frameBlobUrls.length : 120;
-      const frameIdx = Math.min(totalFrames - 1, Math.floor(currentScrollProgress * totalFrames));
-
-      if (frameBlobUrls.length > 0) {
-        if (force || frameIdx !== lastRenderedFrameIdx) {
-          const url = frameBlobUrls[frameIdx];
-          userFrameImg.src = url;
-          userFrameBackdrop.src = url;
-          lastRenderedFrameIdx = frameIdx;
-          preloadWindowAround(frameIdx);
-        }
-      } else {
-        drawProceduralRoom(currentScrollProgress, window.innerWidth, window.innerHeight);
-      }
-
-      const stageIdx = Math.min(7, Math.floor(currentScrollProgress * 8));
-      const st = STAGES[stageIdx];
-      const pctText = `${Math.round(currentScrollProgress * 100)}%`;
-
-      document.getElementById('hud-stage-num').textContent = `STAGE ${st.num} / 08`;
-      document.getElementById('hud-frame-counter').textContent =
-        `FRAME ${String(frameIdx + 1).padStart(3, '0')} / ${String(totalFrames).padStart(3, '0')}`;
-      document.getElementById('hud-scroll-pct').textContent = pctText;
-      document.getElementById('hud-stage-title').textContent = st.title;
-      document.getElementById('hud-stage-desc').textContent = st.desc;
-      document.getElementById('hud-min-text').textContent = `STAGE ${st.num} / 08 • ${pctText}`;
-
-      STAGES.forEach((_, idx) => {
-        const bar = document.getElementById(`step-bar-${idx}`);
-        const lbl = document.getElementById(`step-label-${idx}`);
-        if (idx === stageIdx) {
-          bar.className = "w-9 h-1 bg-[#C5A880] transition-all duration-300";
-          lbl.className = "font-mono-lux text-xs font-bold tracking-widest text-[#C5A880]";
-        } else if (idx < stageIdx) {
-          bar.className = "w-5 h-0.5 bg-[#C5A880]/60 transition-all duration-300";
-          lbl.className = "font-mono-lux text-[10px] tracking-widest text-[#C5A880]/60";
-        } else {
-          bar.className = "w-4 h-0.5 bg-white/20 transition-all duration-300";
-          lbl.className = "font-mono-lux text-[10px] tracking-widest text-white/35";
-        }
-      });
-
-      const reveal = document.getElementById('final-reveal-overlay');
-      if (currentScrollProgress >= 0.875) {
-        reveal.classList.remove('opacity-0', 'translate-y-6');
-        reveal.classList.add('opacity-100', 'translate-y-0');
-      } else {
-        reveal.classList.add('opacity-0', 'translate-y-6');
-        reveal.classList.remove('opacity-100', 'translate-y-0');
-      }
-    }
-
-    function renderLoop() {
-      currentScrollProgress += (targetScrollProgress - currentScrollProgress) * 0.16;
-      renderCurrentFrame(false);
-      requestAnimationFrame(renderLoop);
-    }
-    requestAnimationFrame(renderLoop);
-
-    // Lighting & X-Ray Controls
-    function setLighting(mode) {
-      mediaWrap.classList.remove('mode-day', 'mode-golden', 'mode-night');
-      mediaWrap.classList.add(`mode-${mode}`);
-      ['day', 'golden', 'night'].forEach(m => {
-        const b = document.getElementById(`light-${m}`);
-        if (b) b.className = m === mode
-          ? "px-2.5 py-1 rounded-full bg-[#C5A880] text-[#0B0B0A] font-semibold"
-          : "px-2.5 py-1 rounded-full text-[#FAF8F5]/75 hover:text-[#C5A880]";
-      });
-    }
-
-    function toggleXray() {
-      document.body.classList.toggle('xray-on');
-      const btn = document.getElementById('xray-btn');
-      btn.classList.toggle('bg-teal-400');
-      btn.classList.toggle('text-black');
-    }
-
-    window.addEventListener('mousemove', e => {
-      document.documentElement.style.setProperty('--cx', `${e.clientX}px`);
-      document.documentElement.style.setProperty('--cy', `${e.clientY}px`);
-    });
-
-    // Interactive Before/After Slider
-    const baWrapper = document.getElementById('ba-wrapper');
-    const baClip = document.getElementById('ba-before-clip');
-    const baHandle = document.getElementById('ba-handle');
-    let baDragging = false;
-
-    function moveBeforeAfter(clientX) {
-      const rect = baWrapper.getBoundingClientRect();
-      const pct = Math.max(5, Math.min(95, ((clientX - rect.left) / rect.width) * 100));
-      baClip.style.width = `${pct}%`;
-      baHandle.style.left = `${pct}%`;
-    }
-    baWrapper.addEventListener('mousedown', () => baDragging = true);
-    window.addEventListener('mouseup', () => baDragging = false);
-    baWrapper.addEventListener('mousemove', e => { if (baDragging) moveBeforeAfter(e.clientX); });
-    baWrapper.addEventListener('touchmove', e => moveBeforeAfter(e.touches[0].clientX), { passive: true });
-    baWrapper.addEventListener('click', e => moveBeforeAfter(e.clientX));
-
-    // Floorplan Rooms
-    const FLOOR_ROOMS = [
-      {
-        code: "ZONE 01 // LIVING", area: "2,400 SQ.FT.", title: "The Double-Height Grand Salon",
-        desc: "Bookmatched Italian Calacatta Gold flooring paired with acoustic fluted American walnut walls and a custom 4.2m curved bouclé sofa.",
-        img: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1000&q=80",
-        mats: ["Calacatta Marble", "Fluted Walnut", "Loro Piana Bouclé"]
-      },
-      {
-        code: "ZONE 02 // GASTRONOMY", area: "1,450 SQ.FT.", title: "Onyx Formal Dining & Wine Vault",
-        desc: "Backlit honey onyx bar counter, temperature-controlled 600-bottle glass wine vault, and a 14-seater monolithic travertine dining table.",
-        img: "https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=1000&q=80",
-        mats: ["Backlit Honey Onyx", "Smoked Bronze Glass", "Brushed Brass"]
-      },
-      {
-        code: "ZONE 03 // SANCTUARY", area: "2,100 SQ.FT.", title: "Primary Presidential Suite & Spa Bath",
-        desc: "Suede-upholstered acoustic headboard wall, walk-in Poliform couture dressing gallery, and a monolithic carved stone soaking tub.",
-        img: "https://images.unsplash.com/photo-1616594039964-ae9021a400a0?auto=format&fit=crop&w=1000&q=80",
-        mats: ["Belgian Suede", "Smoked Eucalyptus", "Nero Marquina Stone"]
-      },
-      {
-        code: "ZONE 04 // OUTDOOR", area: "2,550 SQ.FT.", title: "Cantilevered Infinity Sky Deck",
-        desc: "Weatherproof Italian teak lounging pavilions, sunken bio-ethanol fire pit, and mature Mediterranean olive trees overlooking the skyline.",
-        img: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1000&q=80",
-        mats: ["Burmese Teak", "Flamed Basalt", "Cortén Steel"]
-      }
-    ];
-
-    function selectFloorRoom(idx) {
-      const r = FLOOR_ROOMS[idx];
-      document.getElementById('fp-code').textContent = r.code;
-      document.getElementById('fp-area').textContent = r.area;
-      document.getElementById('fp-title').textContent = r.title;
-      document.getElementById('fp-desc').textContent = r.desc;
-      document.getElementById('fp-img').src = r.img;
-      document.getElementById('fp-materials').innerHTML = r.mats
-        .map(m => `<span class="bg-[#F2ECE1] px-3 py-1 border border-[#C5A880]/40">${m}</span>`).join('');
-    }
-    selectFloorRoom(0);
-
-    // 4 Full-Bleed Parallax Portfolio Chapters
-    const CHAPTERS = [
-      {
-        id: "sec-apartments",
-        title: "APARTMENTS & SKY PENTHOUSES",
-        tagline: "“Elevated sanctuaries suspended above the metropolitan horizon.”",
-        desc: "Bare-shell high-rise residences transformed into serene collector galleries with private elevator lobbies, acoustic wall cladding, and custom Italian furniture.",
-        banner: "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1920&q=85",
-        gallery: [
-          "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=900&q=80",
-          "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=900&q=80",
-          "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=900&q=80"
-        ]
-      },
-      {
-        id: "sec-farmhouses",
-        title: "FARMHOUSES & PRIVATE VILLAS",
-        tagline: "“Sprawling architectural estates where raw limestone meets manicured nature.”",
-        desc: "Resort-scale private estates featuring double-height colonnades, indoor-outdoor courtyard pavilions, and bespoke handcrafted stone detailing.",
-        banner: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1920&q=85",
-        gallery: [
-          "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=900&q=80",
-          "https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=900&q=80",
-          "https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&fit=crop&w=900&q=80"
-        ]
-      },
-      {
-        id: "sec-offices",
-        title: "EXECUTIVE OFFICE INTERIORS",
-        tagline: "“Architectural workplaces engineered for quiet power and timeless prestige.”",
-        desc: "Private family offices, C-suite penthouses, and flagship headquarters blending museum-grade art curation with seamless boardroom telemetry.",
-        banner: "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1920&q=85",
-        gallery: [
-          "https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=900&q=80",
-          "https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&w=900&q=80",
-          "https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&w=900&q=80"
-        ]
-      },
-      {
-        id: "sec-hospitality",
-        title: "BESPOKE HOSPITALITY & CLUBS",
-        tagline: "“Theatrical spatial narratives crafted for unforgettable guest immersion.”",
-        desc: "Boutique heritage palaces, luxury wellness retreats, and fine-dining destinations choreographed with dramatic lighting and tactile materiality.",
-        banner: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1920&q=85",
-        gallery: [
-          "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=900&q=80",
-          "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=900&q=80",
-          "https://images.unsplash.com/photo-1578683010236-d716f9a3f461?auto=format&fit=crop&w=900&q=80"
-        ]
-      }
-    ];
-
-    document.getElementById('portfolio-chapters').innerHTML = CHAPTERS.map(ch => `
-      <section id="${ch.id}" class="mb-20">
-        <div class="parallax-bg h-[55vh] md:h-[68vh] relative flex items-center justify-center text-center px-6"
-             style="background-image: url('${ch.banner}');">
-          <div class="absolute inset-0 bg-black/55"></div>
-          <div class="relative z-10 border border-[#C5A880]/50 bg-black/65 backdrop-blur-sm px-8 md:px-16 py-8">
-            <p class="font-mono-lux text-xs text-[#C5A880] uppercase tracking-[0.3em] mb-2">DAGORIYA PORTFOLIO</p>
-            <h2 class="font-serif-lux text-3xl md:text-6xl text-[#FAF8F5] tracking-[0.15em] uppercase">${ch.title}</h2>
-          </div>
-        </div>
-
-        <div class="max-w-7xl mx-auto px-6 md:px-12 py-16 text-center">
-          <p class="font-serif-lux italic text-2xl md:text-4xl text-[#9A7B50] mb-4">${ch.tagline}</p>
-          <p class="max-w-3xl mx-auto text-sm md:text-base text-[#1C1C1C]/75 font-light leading-relaxed mb-12">${ch.desc}</p>
-
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            ${ch.gallery.map(img => `
-              <div onclick="openLightbox('${img}')" class="group overflow-hidden border border-black/10 cursor-zoom-in relative h-80">
-                <img src="${img}" class="w-full h-full object-cover group-hover:scale-110 transition duration-700" alt="${ch.title}" />
-                <div class="absolute inset-0 bg-black/0 group-hover:bg-black/35 transition flex items-end p-5">
-                  <span class="opacity-0 group-hover:opacity-100 text-[#FAF8F5] font-mono-lux text-xs uppercase tracking-widest transition">
-                    + Inspect Full Screen
-                  </span>
-                </div>
-              </div>
-            `).join('')}
-          </div>
-        </div>
-      </section>
-    `).join('');
-
-    function openLightbox(src) {
-      const lb = document.getElementById('lightbox');
-      document.getElementById('lightbox-img').src = src;
-      lb.classList.remove('hidden');
-      lb.classList.add('flex');
-    }
-    function closeLightbox() {
-      const lb = document.getElementById('lightbox');
-      lb.classList.add('hidden');
-      lb.classList.remove('flex');
-    }
-
-    // Cost Estimator
-    function formatINR(val) {
-      if (val >= 10000000) return `₹${(val / 10000000).toFixed(2)} Cr`;
-      return `₹${(val / 100000).toFixed(1)} L`;
-    }
-
-    function updateEstimate() {
-      const rate = parseInt(document.getElementById('est-rate').value, 10);
-      const area = parseInt(document.getElementById('est-area').value, 10);
-      document.getElementById('est-area-label').textContent = `${area.toLocaleString()} sq.ft`;
-
-      const total = rate * area;
-      document.getElementById('est-total').textContent = `${formatINR(total)}*`;
-      document.getElementById('boq-civil').textContent = formatINR(total * 0.35);
-      document.getElementById('boq-millwork').textContent = formatINR(total * 0.25);
-      document.getElementById('boq-furniture').textContent = formatINR(total * 0.25);
-      document.getElementById('boq-lighting').textContent = formatINR(total * 0.15);
-    }
-    updateEstimate();
-
-    function sendWhatsAppEstimate() {
-      const type = document.getElementById('est-type').value;
-      const area = document.getElementById('est-area').value;
-      const total = document.getElementById('est-total').textContent;
-      const text = encodeURIComponent(
-        `Hello DAGORIYA Studio,\n\nI generated a turnkey interior BOQ estimate on your website:\n• Property: ${type}\n• Carpet Area: ${area} sq.ft\n• Estimated Turnkey Budget: ${total}\n\nPlease schedule a private design consultation.`
-      );
-      window.open(`https://wa.me/?text=${text}`, '_blank');
-    }
-  </script>
-</body>
-</html>
+      <!-- STAGE 08 CENTERED STUDIO BRAND REVEAL OVERLAY -->
+      <div id="stage-8-brand-reveal" class="
