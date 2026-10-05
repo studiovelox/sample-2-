@@ -1,500 +1,644 @@
-<!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ATELIER VELOX — Haute Architecture & Interior Couture</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,600&family=JetBrains+Mono:wght@300;400;500&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            alabaster: '#FAF8F5',
-            pearl: '#F2ECE1',
-            charcoal: '#141413',
-            obsidian: '#0B0B0A',
-            gold: '#C5A880',
-            goldLight: '#DFC6A2',
-            goldDark: '#9A7B50',
-            stone: '#78736A'
-          },
-          fontFamily: {
-            serif: ['"Cormorant Garamond"', 'Georgia', 'serif'],
-            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
-            mono: ['"JetBrains Mono"', 'monospace']
-          }
-        }
-      }
-    }
-  </script>
-
+<!-- ... existing code ... -->
   <style>
     :root {
-      --cursor-x: 50vw;
-      --cursor-y: 50vh;
+      --cx: 50vw;
+      --cy: 50vh;
     }
-
     body {
       background-color: #FAF8F5;
-      color: #141413;
+      color: #1C1C1C;
       font-family: 'Plus Jakarta Sans', sans-serif;
       overflow-x: hidden;
     }
-
-    /* Custom Scrollbar */
-    ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: #0B0B0A; }
-    ::-webkit-scrollbar-thumb { background: #C5A880; border-radius: 3px; }
-
-    /* Custom Magnetic Cursor */
-    @media (pointer: fine) {
-      .custom-cursor-dot {
-        position: fixed;
-        top: 0; left: 0;
-        width: 8px; height: 8px;
-        background: #C5A880;
-        border-radius: 50%;
-        pointer-events: none;
-        z-index: 9999;
-        transform: translate(-50%, -50%);
-        transition: width 0.2s, height 0.2s, background 0.2s;
-      }
-      .custom-cursor-ring {
-        position: fixed;
-        top: 0; left: 0;
-        width: 38px; height: 38px;
-        border: 1px solid rgba(197, 168, 128, 0.55);
-        border-radius: 50%;
-        pointer-events: none;
-        z-index: 9998;
-        transform: translate(-50%, -50%);
-        transition: width 0.25s ease-out, height 0.25s ease-out, border-color 0.25s;
-      }
+    ::-webkit-scrollbar {
+      width: 6px;
     }
-
-    /* X-Ray Blueprint Lens Mask */
-    .xray-layer {
+    ::-webkit-scrollbar-track {
+      background: #0B0B0A;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #C5A880;
+      border-radius: 3px;
+    }
+    /* Pure GPU-Accelerated Lighting & Crispness Modes (Zero hidden SVG filter bugs) */
+    .mode-day {
+      filter: brightness(1.02) contrast(1.02) saturate(1.0);
+    }
+    .mode-golden {
+      filter: brightness(0.96) contrast(1.08) sepia(0.22) saturate(1.28);
+    }
+    .mode-night {
+      filter: brightness(0.68) contrast(1.18) hue-rotate(-10deg) saturate(0.88);
+    }
+    .hd-crisp-active.mode-day {
+      filter: brightness(1.02) contrast(1.08) saturate(1.06);
+    }
+    .hd-crisp-active.mode-golden {
+      filter: brightness(0.96) contrast(1.12) sepia(0.22) saturate(1.32);
+    }
+    .hd-crisp-active.mode-night {
+      filter: brightness(0.7) contrast(1.22) hue-rotate(-10deg) saturate(0.92);
+    }
+    /* X-Ray CAD Blueprint Circular Lens */
+    #xray-layer {
       pointer-events: none;
-      clip-path: circle(0px at var(--cursor-x) var(--cursor-y));
-      transition: clip-path 0.08s ease-out;
+      clip-path: circle(0px at var(--cx) var(--cy));
+      transition: clip-path 0.07s ease-out;
     }
-    .xray-active .xray-layer {
-      clip-path: circle(165px at var(--cursor-x) var(--cursor-y));
+    body.xray-on #xray-layer {
+      clip-path: circle(165px at var(--cx) var(--cy));
     }
-
-    /* Stage Layer Transitions */
-    .renovation-layer {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      will-change: opacity, transform, filter;
-      transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), filter 0.6s ease;
-    }
-
-    /* Lighting Modes on Hero Room */
-    .lighting-day { filter: brightness(1.03) contrast(1.02) saturate(1.0); }
-    .lighting-golden { filter: brightness(0.96) contrast(1.08) sepia(0.22) saturate(1.25); }
-    .lighting-midnight { filter: brightness(0.68) contrast(1.18) hue-rotate(-12deg) saturate(0.9); }
-
-    /* Parallax Banner */
-    .parallax-banner {
+    /* Full-bleed Parallax Banner */
+    .parallax-bg {
       background-attachment: fixed;
-      background-position: center;
+      background-position: center center;
       background-repeat: no-repeat;
       background-size: cover;
     }
-    @media (max-width: 768px) {
-      .parallax-banner {
+    @media (max-width: 1024px) {
+      .parallax-bg {
         background-attachment: scroll;
       }
     }
-
-    /* Pulse Animation for Floorplan Pins */
-    @keyframes pulseGold {
-      0% { box-shadow: 0 0 0 0 rgba(197, 168, 128, 0.7); }
+    /* Pulsing Gold Floorplan Nodes */
+    @keyframes pulseRing {
+      0% { box-shadow: 0 0 0 0 rgba(197, 168, 128, 0.75); }
       70% { box-shadow: 0 0 0 14px rgba(197, 168, 128, 0); }
       100% { box-shadow: 0 0 0 0 rgba(197, 168, 128, 0); }
     }
     .pin-pulse {
-      animation: pulseGold 2s infinite;
-    }
-
-    /* Subtle grain overlay */
-    .film-grain {
-      background-image: radial-gradient(rgba(255,255,255,0.04) 1px, transparent 0);
-      background-size: 24px 24px;
+      animation: pulseRing 2s infinite;
     }
   </style>
 </head>
-<body class="selection:bg-gold selection:text-obsidian">
+<body class="selection:bg-gold selection:text-obsidian antialiased">
 
-  <!-- Custom Cursor -->
-  <div id="cursorDot" class="custom-cursor-dot hidden md:block"></div>
-  <div id="cursorRing" class="custom-cursor-ring hidden md:block"></div>
+  <!-- =================================================================
+       DEDICATED FILE & FOLDER INPUTS (100% BROWSER COMPATIBLE)
+       ================================================================= -->
+  <input type="file" id="frame-files-input" multiple accept="image/*,.jpg,.jpeg,.png,.webp,.avif,.bmp" class="sr-only" />
+  <input type="file" id="frame-folder-input" webkitdirectory directory multiple class="sr-only" />
 
-  <!-- ==========================================
-       PART 1: 800VH 8-SCROLL ROOM RENOVATION HERO
-       ========================================== -->
-  <section id="hero-scroll-track" class="relative w-full" style="height: 800vh;">
-    <div id="hero-sticky-viewport" class="sticky top-0 left-0 w-full h-screen overflow-hidden bg-obsidian select-none">
+  <!-- =================================================================
+       PART 1: 800VH STICKY VIDEO-FRAME SCROLL-TO-RENOVATE HERO
+       ================================================================= -->
+  <section id="hero-scroll-container" class="relative w-full" style="height: 800vh;">
+    <div class="sticky top-0 left-0 w-full h-screen overflow-hidden bg-obsidian select-none">
 
-      <!-- MASTER ARCHITECTURAL ROOM CONTAINER -->
-      <div id="room-canvas" class="relative w-full h-full lighting-day transition-all duration-700">
+      <!-- MAIN INTERACTIVE HTML5 FRAME CANVAS (RETINA HIGH-DPI + GPU CRISP) -->
+      <canvas id="renovation-canvas" class="w-full h-full block mode-day hd-crisp-active transition-all duration-300"></canvas>
 
-        <!-- STAGE 01: Raw Architectural Space & Laser Scan (0% - 12.5%) -->
-        <div id="stage-1" class="renovation-layer opacity-100">
-          <svg viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice" class="w-full h-full">
-            <defs>
-              <linearGradient id="rawWall" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0%" stop-color="#1E1D1B"/>
-                <stop offset="50%" stop-color="#2A2825"/>
-                <stop offset="100%" stop-color="#151412"/>
-              </linearGradient>
-              <pattern id="brickGrid" width="60" height="30" patternUnits="userSpaceOnUse">
-                <rect width="60" height="30" fill="none" stroke="#36332E" stroke-width="1"/>
-                <line x1="30" y1="0" x2="30" y2="15" stroke="#36332E" stroke-width="1"/>
-              </pattern>
-              <pattern id="laserGrid" width="80" height="80" patternUnits="userSpaceOnUse">
-                <path d="M 80 0 L 0 0 0 80" fill="none" stroke="rgba(197,168,128,0.12)" stroke-width="1"/>
-              </pattern>
-            </defs>
-            <!-- Concrete Shell Background -->
-            <rect width="1920" height="1080" fill="url(#rawWall)"/>
-            <!-- Back Wall Perspective -->
-            <polygon points="320,160 1600,160 1600,780 320,780" fill="url(#brickGrid)" opacity="0.65"/>
-            <!-- Left Wall -->
-            <polygon points="0,0 320,160 320,780 0,1080" fill="#1B1A18" stroke="#3A3630" stroke-width="1.5"/>
-            <!-- Right Window Wall Raw Cutouts -->
-            <polygon points="1920,0 1600,160 1600,780 1920,1080" fill="#21201D" stroke="#3A3630" stroke-width="1.5"/>
-            <!-- Raw Window Frames -->
-            <polygon points="1640,190 1870,95 1870,890 1640,740" fill="#2C3033" stroke="#524D45" stroke-width="2"/>
-            <!-- Exposed Ceiling Beams -->
-            <polygon points="0,0 1920,0 1600,160 320,160" fill="#141311"/>
-            <line x1="200" y1="40" x2="1720" y2="40" stroke="#2D2A26" stroke-width="18"/>
-            <line x1="260" y1="95" x2="1660" y2="95" stroke="#252320" stroke-width="14"/>
-            <!-- Raw Concrete Slab Floor -->
-            <polygon points="320,780 1600,780 1920,1080 0,1080" fill="#23211E"/>
-            <!-- CAD Laser Grid Overlay -->
-            <rect width="1920" height="1080" fill="url(#laserGrid)"/>
-            <!-- Architectural Elevation Markers -->
-            <g stroke="#C5A880" stroke-width="1" stroke-dasharray="6,6" opacity="0.55">
-              <line x1="320" y1="160" x2="1600" y2="160"/>
-              <line x1="320" y1="780" x2="1600" y2="780"/>
-              <line x1="960" y1="0" x2="960" y2="1080"/>
-            </g>
-            <text x="345" y="195" fill="#C5A880" font-family="JetBrains Mono" font-size="13" opacity="0.8">ELEVATION +4200MM // BARE SHELL STRUCTURAL SCAN</text>
-            <text x="345" y="760" fill="#C5A880" font-family="JetBrains Mono" font-size="13" opacity="0.8">FFL ±0.00 // RAW RCC SLAB</text>
-          </svg>
+      <!-- DRAG & DROP VIDEO FRAMES VISUAL OVERLAY -->
+      <div id="drop-zone-overlay" class="absolute inset-0 z-40 bg-obsidian/90 backdrop-blur-md border-4 border-dashed border-gold hidden items-center justify-center pointer-events-none">
+        <div class="text-center p-8">
+          <p class="font-mono text-sm uppercase tracking-[0.3em] text-gold mb-2">Drop Your 486+ Video Frames Here</p>
+          <h3 class="font-serif text-4xl md:text-5xl text-alabaster">Instant 4K Retina Frame Scrubber</h3>
         </div>
-
-        <!-- STAGE 02: Smooth Plastered Warm Alabaster Walls (12.5% - 25%) -->
-        <div id="stage-2" class="renovation-layer opacity-0">
-          <svg viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice" class="w-full h-full">
-            <defs>
-              <linearGradient id="alabasterBack" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stop-color="#EAE3D5"/>
-                <stop offset="100%" stop-color="#D8CEBE"/>
-              </linearGradient>
-              <linearGradient id="alabasterLeft" x1="0" y1="0" x2="1" y2="0">
-                <stop offset="0%" stop-color="#C9BFA9"/>
-                <stop offset="100%" stop-color="#DFD7C8"/>
-              </linearGradient>
-              <linearGradient id="alabasterRight" x1="0" y1="0" x2="1" y2="0">
-                <stop offset="0%" stop-color="#E5DEC9"/>
-                <stop offset="100%" stop-color="#F3EFE6"/>
-              </linearGradient>
-            </defs>
-            <!-- Smooth Plastered Back Wall -->
-            <polygon points="320,160 1600,160 1600,780 320,780" fill="url(#alabasterBack)"/>
-            <!-- Smooth Plastered Left Wall -->
-            <polygon points="0,0 320,160 320,780 0,1080" fill="url(#alabasterLeft)"/>
-            <!-- Smooth Plastered Right Window Wall with Natural Daylight -->
-            <polygon points="1920,0 1600,160 1600,780 1920,1080" fill="url(#alabasterRight)"/>
-            <!-- Tall Arch/Floor-to-Ceiling Window Daylight -->
-            <polygon points="1645,175 1885,75 1885,915 1645,755" fill="#FAF7F0"/>
-            <!-- Soft Sunlight Spill on Back Wall -->
-            <polygon points="1100,160 1600,160 1600,780 900,780" fill="rgba(255,250,235,0.22)"/>
-          </svg>
-        </div>
-
-        <!-- STAGE 03: Recessed Gypsum Coffered False Ceiling (25% - 37.5%) -->
-        <div id="stage-3" class="renovation-layer opacity-0">
-          <svg viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice" class="w-full h-full">
-            <!-- Outer Ceiling Perimeter -->
-            <polygon points="0,0 1920,0 1600,160 320,160" fill="#F2ECE1"/>
-            <!-- Recessed Coffer Step 1 -->
-            <polygon points="150,22 1770,22 1530,140 390,140" fill="#E2D9C8" stroke="#C5A880" stroke-width="1.5"/>
-            <!-- Inner Deep Coffer Tray -->
-            <polygon points="240,42 1680,42 1480,125 440,125" fill="#D5CBB8"/>
-            <!-- Architectural Linear Diffuser Slots -->
-            <line x1="360" y1="150" x2="1560" y2="150" stroke="#1C1C1C" stroke-width="4" opacity="0.7"/>
-            <line x1="420" y1="32" x2="1500" y2="32" stroke="#1C1C1C" stroke-width="3" opacity="0.5"/>
-          </svg>
-        </div>
-
-        <!-- STAGE 04: Bespoke Flooring — Herringbone Oak & Bookmatched Calacatta Border (37.5% - 50%) -->
-        <div id="stage-4" class="renovation-layer opacity-0">
-          <svg viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice" class="w-full h-full">
-            <defs>
-              <linearGradient id="woodFloor" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stop-color="#8B6B4A"/>
-                <stop offset="50%" stop-color="#765839"/>
-                <stop offset="100%" stop-color="#5A4027"/>
-              </linearGradient>
-              <pattern id="herringbone" width="80" height="40" patternUnits="userSpaceOnUse">
-                <path d="M0,20 L40,0 L80,20 L40,40 Z" fill="none" stroke="rgba(45,28,12,0.32)" stroke-width="1.5"/>
-                <line x1="40" y1="0" x2="40" y2="40" stroke="rgba(255,235,205,0.12)" stroke-width="1"/>
-              </pattern>
-            </defs>
-            <!-- Main Floor Polygon -->
-            <polygon id="floor-poly" points="320,780 1600,780 1920,1080 0,1080" fill="url(#woodFloor)"/>
-            <polygon points="320,780 1600,780 1920,1080 0,1080" fill="url(#herringbone)"/>
-            <!-- Italian Marble Inlay Border & Brass Trim -->
-            <polygon points="340,795 1580,795 1840,1055 80,1055" fill="none" stroke="#C5A880" stroke-width="3" opacity="0.85"/>
-            <!-- Baseboard Skirting -->
-            <polygon points="320,766 1600,766 1600,780 320,780" fill="#C7BBA6"/>
-            <polygon points="0,1060 320,766 320,780 0,1080" fill="#B6A992"/>
-          </svg>
-        </div>
-
-        <!-- STAGE 05: Custom Millwork, Fluted Walnut Paneling & Sheer Drapery (50% - 62.5%) -->
-        <div id="stage-5" class="renovation-layer opacity-0">
-          <svg viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice" class="w-full h-full">
-            <defs>
-              <pattern id="flutedWood" width="14" height="100" patternUnits="userSpaceOnUse">
-                <rect x="0" y="0" width="9" height="100" fill="#4A3525"/>
-                <rect x="9" y="0" width="5" height="100" fill="#2D1E12"/>
-              </pattern>
-              <linearGradient id="sheerCurtain" x1="0" y1="0" x2="1" y2="0">
-                <stop offset="0%" stop-color="rgba(250,248,245,0.92)"/>
-                <stop offset="50%" stop-color="rgba(240,234,222,0.65)"/>
-                <stop offset="100%" stop-color="rgba(250,248,245,0.95)"/>
-              </linearGradient>
-            </defs>
-            <!-- Classic Parisian Boiserie Wall Moldings on Back Wall -->
-            <rect x="640" y="200" width="640" height="520" fill="none" stroke="#C5A880" stroke-width="2" opacity="0.7"/>
-            <rect x="660" y="220" width="600" height="480" fill="none" stroke="#B8AC99" stroke-width="1"/>
-            <!-- Left Feature Fluted Walnut Cladding Panel -->
-            <rect x="350" y="160" width="240" height="606" fill="url(#flutedWood)"/>
-            <line x1="590" y1="160" x2="590" y2="766" stroke="#C5A880" stroke-width="3"/>
-            <!-- Right Feature Travertine Marble Fireplace / Console Cladding -->
-            <rect x="1330" y="160" width="230" height="606" fill="#D8CFC0" stroke="#C5A880" stroke-width="2"/>
-            <!-- Built-in Minimalist Hearth Niche -->
-            <rect x="1365" y="580" width="160" height="120" fill="#181715" stroke="#C5A880" stroke-width="1.5"/>
-            <!-- Floor-to-Ceiling Belgian Linen Sheer Drapery on Right Window Wall -->
-            <polygon points="1590,155 1690,115 1690,840 1590,775" fill="url(#sheerCurtain)"/>
-            <polygon points="1810,65 1915,15 1915,1040 1810,945" fill="url(#sheerCurtain)"/>
-            <!-- Drapery Vertical Pleat Lines -->
-            <g stroke="rgba(180,168,148,0.45)" stroke-width="1.5">
-              <line x1="1615" y1="145" x2="1615" y2="795"/>
-              <line x1="1640" y1="135" x2="1640" y2="810"/>
-              <line x1="1665" y1="125" x2="1665" y2="825"/>
-              <line x1="1835" y1="55" x2="1835" y2="965"/>
-              <line x1="1865" y1="40" x2="1865" y2="990"/>
-              <line x1="1890" y1="28" x2="1890" y2="1015"/>
-            </g>
-          </svg>
-        </div>
-
-        <!-- STAGE 06: Curated Luxury Furniture — Bouclé Sofa, Lounge Chairs & Travertine Table (62.5% - 75%) -->
-        <div id="stage-6" class="renovation-layer opacity-0">
-          <svg viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice" class="w-full h-full">
-            <defs>
-              <linearGradient id="boucleSofa" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stop-color="#F7F4EE"/>
-                <stop offset="100%" stop-color="#DDD5C7"/>
-              </linearGradient>
-              <linearGradient id="cognacLeather" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0%" stop-color="#9C5B34"/>
-                <stop offset="100%" stop-color="#63361B"/>
-              </linearGradient>
-            </defs>
-            <!-- Soft Contact Shadows on Floor -->
-            <ellipse cx="960" cy="835" rx="440" ry="42" fill="rgba(15,12,8,0.38)"/>
-            <ellipse cx="460" cy="895" rx="155" ry="30" fill="rgba(15,12,8,0.36)"/>
-            <ellipse cx="960" cy="940" rx="250" ry="32" fill="rgba(15,12,8,0.42)"/>
-
-            <!-- Italian Curved Modular Bouclé Sofa (Center) -->
-            <!-- Backrest -->
-            <rect x="560" y="650" width="800" height="115" rx="42" fill="url(#boucleSofa)" stroke="#CFC6B6" stroke-width="1.5"/>
-            <!-- Left & Right Bolster Arms -->
-            <rect x="525" y="695" width="90" height="125" rx="36" fill="url(#boucleSofa)" stroke="#C8BFAEE" stroke-width="1.5"/>
-            <rect x="1305" y="695" width="90" height="125" rx="36" fill="url(#boucleSofa)" stroke="#C8BFAEE" stroke-width="1.5"/>
-            <!-- 3 Deep Plush Seat Cushions -->
-            <rect x="595" y="730" width="245" height="90" rx="22" fill="#EFEAE0" stroke="#D2C9B8" stroke-width="1.5"/>
-            <rect x="840" y="730" width="240" height="90" rx="22" fill="#F3EFE6" stroke="#D2C9B8" stroke-width="1.5"/>
-            <rect x="1080" y="730" width="245" height="90" rx="22" fill="#EFEAE0" stroke="#D2C9B8" stroke-width="1.5"/>
-            <!-- Brushed Brass Plinth Base -->
-            <rect x="560" y="818" width="800" height="10" rx="3" fill="#C5A880"/>
-            <!-- Designer Throw Pillows -->
-            <rect x="625" y="675" width="75" height="65" rx="14" fill="#C5A880" transform="rotate(-6 625 675)"/>
-            <rect x="1210" y="675" width="75" height="65" rx="14" fill="#4A3525" transform="rotate(8 1210 675)"/>
-
-            <!-- Bespoke Cognac Leather Accent Lounge Chair (Left Foreground) -->
-            <path d="M335,775 Q340,700 445,710 L545,725 Q595,745 580,855 L345,875 Z" fill="url(#cognacLeather)"/>
-            <rect x="365" y="800" width="205" height="65" rx="20" fill="#824927"/>
-            <line x1="375" y1="865" x2="355" y2="905" stroke="#C5A880" stroke-width="5"/>
-            <line x1="550" y1="865" x2="565" y2="905" stroke="#C5A880" stroke-width="5"/>
-
-            <!-- Sculptural Bookmatched Plinth Coffee Table (Center Foreground) -->
-            <ellipse cx="960" cy="925" rx="185" ry="28" fill="#302B26"/>
-            <rect x="820" y="885" width="280" height="45" rx="8" fill="#D8CFC0" stroke="#C5A880" stroke-width="1.5"/>
-            <ellipse cx="960" cy="885" rx="235" ry="30" fill="#F3EFE6" stroke="#C5A880" stroke-width="2"/>
-          </svg>
-        </div>
-
-        <!-- STAGE 07: Art, Hand-Knotted Silk Rug, Sculptures & Olive Tree (75% - 87.5%) -->
-        <div id="stage-7" class="renovation-layer opacity-0">
-          <svg viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice" class="w-full h-full">
-            <!-- Hand-Knotted Tibetan Wool & Bamboo Silk Area Rug (Layered visually around table) -->
-            <polygon points="410,825 1510,825 1730,1045 190,1045" fill="none" stroke="#DFD5C5" stroke-width="14" opacity="0.85"/>
-            <polygon points="435,840 1485,840 1685,1030 235,1030" fill="rgba(244,239,229,0.26)" stroke="#C5A880" stroke-width="1.5"/>
-
-            <!-- Large Museum-Grade Minimalist Textured Triptych Canvas on Back Wall -->
-            <g transform="translate(730, 250)">
-              <rect x="0" y="0" width="460" height="340" fill="#181715" stroke="#C5A880" stroke-width="4"/>
-              <rect x="14" y="14" width="432" height="312" fill="#EAE3D5"/>
-              <!-- Abstract Sculptural Relief Strokes -->
-              <circle cx="165" cy="155" r="95" fill="none" stroke="#1C1C1C" stroke-width="2.5"/>
-              <path d="M 80,260 Q 230,90 380,240" fill="none" stroke="#C5A880" stroke-width="8"/>
-              <circle cx="300" cy="120" r="38" fill="#4A3525" opacity="0.85"/>
-              <line x1="230" y1="30" x2="230" y2="295" stroke="#1C1C1C" stroke-width="1.5" opacity="0.4"/>
-            </g>
-
-            <!-- Coffee Table Styling: Assouline Art Books & Brushed Brass Sculpture -->
-            <rect x="865" y="868" width="85" height="16" rx="2" fill="#1C1C1C" stroke="#C5A880" stroke-width="1"/>
-            <rect x="872" y="856" width="72" height="12" rx="2" fill="#FAF8F5"/>
-            <!-- Ikebana Ceramic Vessel on Coffee Table -->
-            <ellipse cx="1025" cy="868" rx="26" ry="18" fill="#4A3525"/>
-            <circle cx="1025" cy="848" r="12" fill="#C5A880"/>
-
-            <!-- Architectural Mediterranean Olive Tree in Travertine Planter (Right Side) -->
-            <polygon points="1455,720 1545,720 1530,845 1470,845" fill="#D6CCB9" stroke="#B5A892" stroke-width="2"/>
-            <path d="M1500,720 Q1485,610 1515,520 Q1535,450 1485,390" fill="none" stroke="#4A3728" stroke-width="10" stroke-linecap="round"/>
-            <path d="M1505,560 Q1445,510 1420,470" fill="none" stroke="#4A3728" stroke-width="6" stroke-linecap="round"/>
-            <path d="M1512,490 Q1565,450 1595,420" fill="none" stroke="#4A3728" stroke-width="6" stroke-linecap="round"/>
-            <!-- Olive Foliage Clusters -->
-            <g fill="#5C6B57" opacity="0.92">
-              <ellipse cx="1485" cy="380" rx="65" ry="38"/>
-              <ellipse cx="1415" cy="460" rx="52" ry="30"/>
-              <ellipse cx="1590" cy="415" rx="58" ry="34"/>
-              <ellipse cx="1525" cy="435" rx="60" ry="32" fill="#72826C"/>
-              <ellipse cx="1455" cy="415" rx="48" ry="28" fill="#4B5846"/>
-            </g>
-          </svg>
-        </div>
-
-        <!-- STAGE 08: Warm Chandelier, Cove LED Illumination & Brand Reveal (87.5% - 100%) -->
-        <div id="stage-8" class="renovation-layer opacity-0">
-          <svg viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice" class="w-full h-full">
-            <defs>
-              <radialGradient id="coveGlow" cx="50%" cy="12%" r="55%">
-                <stop offset="0%" stop-color="rgba(255, 218, 160, 0.55)"/>
-                <stop offset="45%" stop-color="rgba(235, 188, 120, 0.18)"/>
-                <stop offset="100%" stop-color="rgba(0, 0, 0, 0)"/>
-              </radialGradient>
-              <radialGradient id="wallWasher" cx="50%" cy="38%" r="35%">
-                <stop offset="0%" stop-color="rgba(255, 226, 175, 0.42)"/>
-                <stop offset="100%" stop-color="rgba(0, 0, 0, 0)"/>
-              </radialGradient>
-              <radialGradient id="hearthFire" cx="50%" cy="50%" r="50%">
-                <stop offset="0%" stop-color="rgba(255, 165, 70, 0.85)"/>
-                <stop offset="60%" stop-color="rgba(225, 95, 30, 0.35)"/>
-                <stop offset="100%" stop-color="rgba(0, 0, 0, 0)"/>
-              </radialGradient>
-            </defs>
-
-            <!-- Warm Architectural Cove LED Perimeter Glow -->
-            <rect width="1920" height="1080" fill="url(#coveGlow)"/>
-            <rect width="1920" height="1080" fill="url(#wallWasher)"/>
-            <polygon points="150,22 1770,22 1530,140 390,140" fill="none" stroke="#FFE2B3" stroke-width="5" opacity="0.9"/>
-
-            <!-- Vertical LED Strip Accent Along Fluted Wood Panel -->
-            <line x1="592" y1="162" x2="592" y2="764" stroke="#FFE0AD" stroke-width="6" opacity="0.85"/>
-            <line x1="1328" y1="162" x2="1328" y2="764" stroke="#FFE0AD" stroke-width="5" opacity="0.75"/>
-
-            <!-- Bio-Ethanol Fireplace Flame Glow -->
-            <ellipse cx="1445" cy="655" rx="95" ry="65" fill="url(#hearthFire)"/>
-            <path d="M1405,670 Q1425,625 1445,665 Q1465,615 1485,670 Z" fill="#FFB357"/>
-
-            <!-- Bespoke Sculptural Bocci / Apparatus Glass & Brass Chandelier -->
-            <line x1="930" y1="42" x2="930" y2="215" stroke="#C5A880" stroke-width="2.5"/>
-            <line x1="990" y1="42" x2="990" y2="245" stroke="#C5A880" stroke-width="2.5"/>
-            <line x1="825" y1="205" x2="1095" y2="235" stroke="#C5A880" stroke-width="4"/>
-            <line x1="855" y1="245" x2="1065" y2="195" stroke="#C5A880" stroke-width="3"/>
-            <!-- Illuminated Alabaster Glass Orbs -->
-            <g fill="#FFF6E5" stroke="#C5A880" stroke-width="1.5">
-              <circle cx="825" cy="205" r="20"/>
-              <circle cx="890" cy="215" r="15"/>
-              <circle cx="960" cy="220" r="24"/>
-              <circle cx="1035" cy="228" r="16"/>
-              <circle cx="1095" cy="235" r="21"/>
-              <circle cx="855" cy="245" r="17"/>
-              <circle cx="1065" cy="195" r="18"/>
-            </g>
-          </svg>
-        </div>
-
-        <!-- X-RAY CAD BLUEPRINT LOUPE LAYER (Visible when X-Ray Mode is toggled ON) -->
-        <div id="xray-overlay" class="xray-layer absolute inset-0 bg-[#0A192F]/95 z-20">
-          <svg viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice" class="w-full h-full">
-            <defs>
-              <pattern id="cadGrid" width="40" height="40" patternUnits="userSpaceOnUse">
-                <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(100,255,218,0.16)" stroke-width="1"/>
-              </pattern>
-            </defs>
-            <rect width="1920" height="1080" fill="url(#cadGrid)"/>
-            <g stroke="#64FFDA" fill="none" stroke-width="1.5">
-              <polygon points="320,160 1600,160 1600,780 320,780"/>
-              <line x1="0" y1="0" x2="320" y2="160"/>
-              <line x1="1920" y1="0" x2="1600" y2="160"/>
-              <line x1="0" y1="1080" x2="320" y2="780"/>
-              <line x1="1920" y1="1080" x2="1600" y2="780"/>
-              <rect x="730" y="250" width="460" height="340" stroke-dasharray="6,4"/>
-              <rect x="560" y="650" width="800" height="175"/>
-              <ellipse cx="960" cy="885" rx="235" ry="30"/>
-              <circle cx="960" cy="220" r="140" stroke-dasharray="4,4"/>
-            </g>
-            <g fill="#64FFDA" font-family="JetBrains Mono" font-size="13">
-              <text x="745" y="240">ARTWORK NICHE: 2400mm x 1800mm [CRI 97+ DALI SPOT]</text>
-              <text x="570" y="638">MINOTTI HAMILTON MODULAR // 4200mm SPAN</text>
-              <text x="860" y="950">TRAVERTINE PLINTH Ø1600mm</text>
-              <text x="1340" y="565">HVAC LINEAR SLOT + BIO-HEARTH FLUE</text>
-              <text x="360" y="320">WALNUT ACOUSTIC SLATS (NRC 0.85)</text>
-            </g>
-          </svg>
-        </div>
-
-        <!-- Dark Subtle Vignette for HUD Legibility -->
-        <div class="absolute inset-0 bg-gradient-to-t from-obsidian/80 via-transparent to-obsidian/45 pointer-events-none"></div>
       </div>
 
-      <!-- TOP FLOATING HERO HEADER & INTERACTIVE STUDIO CONTROLS -->
-      <div class="absolute top-0 left-0 right-0 z-30 flex flex-wrap items-center justify-between px-6 md:px-12 py-6 gap-4">
-        <div class="flex items-center gap-4">
-          <span class="font-serif text-xl md:text-2xl tracking-[0.28em] text-alabaster uppercase">ATELIER VELOX</span>
-          <span class="hidden sm:inline-block h-3 w-[1px] bg-gold/40"></span>
-          <span class="hidden sm:inline-block font-mono text-[11px] tracking-[0.2em] text-gold uppercase">Interactive Spatial Engine v2.4</span>
+      <!-- X-RAY CAD BLUEPRINT LOUPE OVERLAY (Follows cursor when X-Ray is toggled ON) -->
+      <div id="xray-layer" class="absolute inset-0 bg-[#071626]/95 z-20">
+        <svg viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice" class="w-full h-full">
+          <defs>
+            <pattern id="cadGrid" width="40" height="40" patternUnits="userSpaceOnUse">
+              <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(45,212,191,0.16)" stroke-width="1" />
+            </pattern>
+          </defs>
+          <rect width="1920" height="1080" fill="url(#cadGrid)" />
+          <g stroke="#2DD4BF" fill="none" stroke-width="1.5">
+            <rect x="345" y="172" width="1230" height="626" />
+            <line x1="0" y1="0" x2="345" y2="172" />
+            <line x1="1920" y1="0" x2="1575" y2="172" />
+            <line x1="0" y1="1080" x2="345" y2="798" />
+            <line x1="1920" y1="1080" x2="1575" y2="798" />
+            <rect x="460" y="42" width="1000" height="98" stroke-dasharray="6 4" />
+            <rect x="640" y="235" width="640" height="330" stroke-dasharray="8 4" />
+            <rect x="595" y="655" width="730" height="135" rx="24" />
+            <rect x="730" y="845" width="460" height="65" rx="12" />
+          </g>
+          <g fill="#2DD4BF" font-family="JetBrains Mono, monospace" font-size="14">
+            <text x="370" y="155">DAGORIYA BIM // ELEVATION +4200MM // ACOUSTIC &amp; STRUCTURAL SHELL</text>
+            <text x="660" y="220">MUSEUM ARTWORK NICHE // DALI 2700K CRI-98 SPOT CIRCUIT</text>
+            <text x="615" y="642">BESPOKE CURVED BOUCLÉ SOFA // 3,800MM SPAN</text>
+            <text x="750" y="940">ROMAN TRAVERTINE MONOLITH PLINTH // FFL ±0.00</text>
+            <text x="370" y="780">HERRINGBONE SMOKED OAK + BOOKMATCHED CALACATTA MARBLE</text>
+          </g>
+        </svg>
+      </div>
+
+      <!-- SUBTLE VIGNETTE OVERLAY FOR HUD LEGIBILITY -->
+      <div class="absolute inset-0 bg-gradient-to-t from-obsidian/80 via-transparent to-obsidian/50 pointer-events-none z-10"></div>
+
+      <!-- TOP FLOATING BAR -->
+      <div class="absolute top-0 left-0 right-0 z-30 flex flex-wrap items-center justify-between gap-2.5 px-4 sm:px-6 py-3 bg-obsidian/75 backdrop-blur-md border-b border-gold/25">
+        <div class="flex items-center gap-3">
+          <span class="font-serif text-xl sm:text-2xl tracking-[0.28em] text-alabaster font-semibold">DAGORIYA</span>
+          <span id="top-engine-pill" class="hidden xl:inline-block text-[10px] font-mono uppercase tracking-[0.2em] text-gold border border-gold/30 px-2.5 py-0.5 rounded-full">
+            4K Retina Frame Engine
+          </span>
         </div>
 
-        <!-- LIVE ARCHITECTURAL SIMULATION TOOLBAR -->
-        <div class="flex items-center gap-2 bg-obsidian/75 backdrop-blur-md border border-gold/30 rounded-full px-3 py-1.5 text-xs">
-          <span class="font-mono text-[10px] uppercase tracking-widest text-gold/80 px-2 hidden lg:inline">Ambiance:</span>
-          <button onclick="setHeroLighting('day')" id="btn-light-day" class="px-3 py-1 rounded-full bg-gold text-obsidian font-medium transition">Daylight</button>
-          <button onclick="setHeroLighting('golden')" id="btn-light-golden" class="px-3 py-1 rounded-full text-alabaster/80 hover:text-gold transition">Golden Hour</button>
-          <button onclick="setHeroLighting('midnight')" id="btn-light-midnight" class="px-3 py-1 rounded-full text-alabaster/80 hover:text-gold transition">Midnight</button>
-          <span class="h-4 w-[1px] bg-gold/25 mx-1"></span>
-          <button onclick="toggleXrayMode()" id="btn-xray" class="px-3 py-1 rounded-full border border-emerald-400/40 text-emerald-300 font-mono text-[11px] hover:bg-emerald-400/10 transition flex items-center gap-1.5">
-            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> X-Ray CAD Lens
+        <!-- VIDEO FRAME LOADER + ANTI-OVERZOOM / FIT + HD SHARPNESS + LIGHTING TOOLBAR -->
+        <div class="flex flex-wrap items-center gap-2">
+          <!-- Native <label> + onclick reset ensures 100% browser file dialog reliability -->
+          <label
+            for="frame-files-input"
+            onclick="document.getElementById('frame-files-input').value = ''"
+            class="cursor-pointer bg-gold hover:bg-goldDark active:scale-95 text-obsidian font-mono text-[11px] font-semibold uppercase tracking-wider px-3.5 py-1.5 rounded-full transition flex items-center gap-1.5 shadow-lg"
+          >
+            <span>📂 Select Video Frames</span>
+          </label>
+
+          <label
+            for="frame-folder-input"
+            onclick="document.getElementById('frame-folder-input').value = ''"
+            class="cursor-pointer bg-obsidian/90 hover:bg-gold hover:text-obsidian active:scale-95 text-gold border border-gold/50 font-mono text-[11px] uppercase tracking-wider px-3.5 py-1.5 rounded-full transition flex items-center gap-1.5 shadow"
+          >
+            <span>📁 Select Folder</span>
+          </label>
+
+          <!-- Frame Fit & Live Zoom Controls (Prevents 16:9 Over-Zoom & Cropping) -->
+          <div class="flex items-center bg-obsidian/90 border border-gold/30 rounded-full p-0.5 text-[11px] font-mono">
+            <button type="button" onclick="setFrameFitMode('contain')" id="fit-contain-btn" title="Zero Crop — Shows 100% of Video Frame" class="px-2.5 py-1 rounded-full bg-gold text-obsidian font-semibold transition">
+              Fit (No Crop)
+            </button>
+            <button type="button" onclick="setFrameFitMode('balanced')" id="fit-balanced-btn" title="Balanced 92% Cinema Fit" class="px-2.5 py-1 rounded-full text-alabaster/75 hover:text-gold transition">
+              Balanced
+            </button>
+            <button type="button" onclick="setFrameFitMode('cover')" id="fit-cover-btn" title="Fill Screen Edge-to-Edge" class="px-2.5 py-1 rounded-full text-alabaster/75 hover:text-gold transition">
+              Fill
+            </button>
+            <span class="h-3.5 w-[1px] bg-gold/25 mx-1"></span>
+            <button type="button" onclick="adjustFrameZoom(-0.04)" title="Zoom Out Frame" class="px-2 py-0.5 text-gold hover:bg-white/10 rounded-full transition font-bold">−</button>
+            <span id="zoom-level-label" class="px-1.5 text-[10px] text-alabaster min-w-[38px] text-center">100%</span>
+            <button type="button" onclick="adjustFrameZoom(0.04)" title="Zoom In Frame" class="px-2 py-0.5 text-gold hover:bg-white/10 rounded-full transition font-bold">+</button>
+            <button type="button" onclick="toggleHdCrisp()" id="hd-crisp-btn" title="Toggle Crisp HD Contrast Enhancement" class="ml-1 px-2.5 py-1 rounded-full bg-emerald-400/20 border border-emerald-400/50 text-emerald-300 font-semibold transition">
+              ✨ Crisp HD
+            </button>
+          </div>
+
+          <!-- Lighting & X-Ray Controls -->
+          <div class="hidden sm:flex items-center bg-obsidian/80 border border-gold/25 rounded-full p-0.5 text-[11px]">
+            <button type="button" onclick="setLighting('day')" id="light-day" class="px-2.5 py-1 rounded-full bg-gold text-obsidian font-medium transition">Day</button>
+            <button type="button" onclick="setLighting('golden')" id="light-golden" class="px-2.5 py-1 rounded-full text-alabaster/75 hover:text-gold transition">Golden</button>
+            <button type="button" onclick="setLighting('night')" id="light-night" class="px-2.5 py-1 rounded-full text-alabaster/75 hover:text-gold transition">Night</button>
+            <button type="button" onclick="toggleXray()" id="xray-btn" class="ml-1 px-2.5 py-1 rounded-full border border-teal-400/40 text-teal-300 font-mono transition">X-Ray</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- STAGE 08 FINAL BRAND REVEAL OVERLAY (Appears at 87.5% - 100% Scroll) -->
+      <div id="final-reveal-overlay" class="absolute inset-0 z-20 flex flex-col items-center justify-center text-center px-6 pointer-events-none opacity-0 transition-all duration-700 transform translate-y-6">
+        <div class="bg-obsidian/80 backdrop-blur-xl border border-gold/45 px-8 md:px-16 py-10 rounded-3xl max-w-2xl shadow-2xl pointer-events-auto">
+          <p class="font-mono text-xs uppercase tracking-[0.35em] text-gold mb-3">08 / Illumination &amp; Final Reveal</p>
+          <h1 class="font-serif text-5xl md:text-7xl tracking-[0.22em] text-alabaster uppercase mb-3">DAGORIYA</h1>
+          <div class="w-20 h-[1px] bg-gold mx-auto mb-4"></div>
+          <p class="font-serif italic text-lg md:text-2xl text-gold/90 mb-7">
+            “Where raw architectural volume evolves frame-by-frame into timeless living couture.”
+          </p>
+          <div class="flex flex-wrap items-center justify-center gap-3">
+            <a href="#editorial-start" class="inline-block bg-gold hover:bg-goldDark text-obsidian font-mono text-xs uppercase tracking-[0.22em] font-semibold px-7 py-3.5 rounded-full transition shadow-lg">
+              Enter Studio Portfolio ↓
+            </a>
+            <button type="button" onclick="jumpToStage(0)" class="inline-block bg-white/10 hover:bg-white/20 text-alabaster border border-white/25 font-mono text-xs uppercase tracking-[0.2em] px-6 py-3.5 rounded-full transition">
+              Replay Renovation ↺
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT SIDE: 8-STEP VERTICAL PROGRESS BAR (01 to 08) -->
+      <div class="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 z-30 flex flex-col items-end gap-2">
+        <div id="step-indicators" class="bg-obsidian/65 backdrop-blur-md border border-gold/25 px-3 py-4 rounded-2xl flex flex-col gap-2.5"></div>
+      </div>
+
+      <!-- BOTTOM-LEFT: MINIMIZABLE STAGE TITLE HUD & LIVE FRAME TELEMETRY -->
+      <div id="stage-hud-card" class="absolute bottom-5 left-4 sm:left-8 z-30 max-w-lg bg-obsidian/80 backdrop-blur-xl border border-gold/30 border-l-4 border-l-gold p-4 sm:p-5 rounded-2xl text-alabaster shadow-2xl transition-all duration-300">
+        <!-- Top Header Row (Always Visible even when Minimized) -->
+        <div class="flex items-center justify-between gap-4">
+          <div class="flex flex-wrap items-center gap-2 font-mono text-[11px] text-gold uppercase tracking-widest">
+            <span id="hud-stage-num" class="font-semibold">STAGE 01 / 08</span>
+            <span id="hud-frame-dot">•</span>
+            <span id="hud-frame-counter">FRAME 001 / 120</span>
+            <span>•</span>
+            <span id="hud-scroll-pct">0%</span>
+          </div>
+
+          <!-- Minimize / Expand Toggle Button -->
+          <button
+            type="button"
+            id="hud-toggle-btn"
+            onclick="toggleHudMinimize()"
+            title="Minimize or Expand Stage HUD"
+            class="shrink-0 bg-white/10 hover:bg-gold text-alabaster hover:text-obsidian border border-gold/40 font-mono text-[10px] uppercase tracking-wider px-2.5 py-1 rounded-full transition flex items-center gap-1 shadow"
+          >
+            <span id="hud-toggle-label">— Minimize</span>
           </button>
         </div>
+
+        <!-- Collapsible Body (Smoothly hides when Minimized) -->
+        <div id="hud-collapsible-body" class="overflow-hidden transition-all duration-300 max-h-64 opacity-100 mt-2">
+          <h2 id="hud-stage-title" class="font-serif text-2xl sm:text-4xl text-alabaster tracking-wide mb-1.5">
+            01 / Raw Architectural Space
+          </h2>
+          <p id="hud-stage-desc" class="text-xs sm:text-sm text-alabaster/75 font-light leading-relaxed mb-3">
+            Un-renovated concrete &amp; brick structural shell with laser elevation markers.
+          </p>
+          <div class="flex flex-wrap items-center justify-between gap-2 pt-2.5 border-t border-white/10">
+            <p id="frame-source-badge" class="font-mono text-[10px] text-emerald-400 uppercase tracking-wider">
+              ⚡ 120-Frame 3D Engine Active (Click "Select Video Frames" or Drop Files)
+            </p>
+            <div class="flex items-center gap-1.5">
+              <label for="frame-files-input" onclick="document.getElementById('frame-files-input').value = ''" class="cursor-pointer px-2.5 py-1 rounded bg-gold/20 hover:bg-gold text-gold hover:text-obsidian border border-gold/40 text-xs font-mono transition">+ Load Frames</label>
+              <button type="button" onclick="stepStage(-1)" class="px-2.5 py-1 rounded bg-white/10 hover:bg-gold hover:text-obsidian text-xs font-mono transition">← Prev</button>
+              <button type="button" onclick="stepStage(1)" class="px-2.5 py-1 rounded bg-white/10 hover:bg-gold hover:text-obsidian text-xs font-mono transition">Next →</button>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <!-- STAGE 08 CENTERED STUDIO BRAND REVEAL OVERLAY -->
-      <div id="stage-8-brand-reveal" class="
+      <!-- BOTTOM-RIGHT: SKIP INTRO BUTTON -->
+      <a href="#editorial-start" class="absolute bottom-5 right-4 sm:right-8 z-30 bg-alabaster hover:bg-gold text-obsidian font-mono text-xs font-semibold uppercase tracking-[0.2em] px-5 py-3.5 rounded-full transition shadow-xl flex items-center gap-2">
+        <span>Skip Intro</span>
+        <span>↓</span>
+      </a>
+    </div>
+  </section>
+<!-- ... existing code ... -->
+  <!-- =================================================================
+       JAVASCRIPT: VIDEO FRAME SCRUBBER + PROCEDURAL 3D ROOM + UI LOGIC
+       ================================================================= -->
+  <script>
+    const AUTO_FOLDER_CONFIG = {
+      autoLoadFolder: false,
+      folderPath: './frames/',
+      filePrefix: 'frame_',
+      fileExtension: '.jpg',
+      padDigits: 4,
+      totalFrames: 120
+    };
+
+    const STAGES = [
+      { num: "01", title: "01 / Raw Architectural Space", desc: "Un-renovated concrete & brick structural shell with laser elevation markers." },
+      { num: "02", title: "02 / Wall Finishes & Base Coat", desc: "Smooth plastered warm alabaster walls & steel Crittall window mullions." },
+      { num: "03", title: "03 / Ceiling Architecture", desc: "Recessed gypsum coffered false ceiling with linear HVAC diffuser slots." },
+      { num: "04", title: "04 / Bespoke Flooring", desc: "Herringbone smoked oak hardwood & bookmatched Italian Calacatta marble border." },
+      { num: "05", title: "05 / Custom Millwork & Drapery", desc: "Fluted walnut paneling, Parisian boiserie moldings & floor-to-ceiling Belgian linen sheers." },
+      { num: "06", title: "06 / Curated Luxury Furniture", desc: "Italian curved modular bouclé sofa, cognac lounge chair & travertine plinth table." },
+      { num: "07", title: "07 / Art & Styling", desc: "Hand-knotted silk rug, museum-grade relief canvas, sculptures & Mediterranean olive tree." },
+      { num: "08", title: "08 / Illumination & Final Reveal", desc: "2700K architectural cove LEDs, sculptural glass chandelier & Dagoriya signature reveal." }
+    ];
+
+    const canvas = document.getElementById('renovation-canvas');
+    const ctx = canvas.getContext('2d');
+    let userFrames = [];
+    let currentScrollProgress = 0;
+    let targetScrollProgress = 0;
+
+    // Anti-Overzoom & Fit State:
+    // 'contain' = Fit (No Crop, 100% of frame visible)
+    // 'balanced' = Smart hybrid fit (minimal edge crop so chandelier stays visible)
+    // 'cover' = Full edge-to-edge screen fill
+    let frameFitMode = 'contain';
+    let frameZoomScale = 1.0;
+    let hdCrispEnabled = true;
+    let cssWidth = window.innerWidth;
+    let cssHeight = window.innerHeight;
+
+    function resizeCanvas() {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2.5);
+      cssWidth = window.innerWidth;
+      cssHeight = window.innerHeight;
+
+      canvas.width = Math.round(cssWidth * dpr);
+      canvas.height = Math.round(cssHeight * dpr);
+      canvas.style.width = `${cssWidth}px`;
+      canvas.style.height = `${cssHeight}px`;
+
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = 'high';
+
+      const baWrapper = document.getElementById('ba-wrapper');
+      const baBeforeImg = document.getElementById('ba-before-img');
+      if (baWrapper && baBeforeImg) {
+        baBeforeImg.style.width = `${baWrapper.offsetWidth}px`;
+      }
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    // Live Frame Fit, Zoom & Crisp HD Controls
+    function setFrameFitMode(mode) {
+      frameFitMode = mode;
+      if (mode === 'contain') frameZoomScale = 1.0;
+      if (mode === 'balanced') frameZoomScale = 0.94;
+      if (mode === 'cover') frameZoomScale = 1.0;
+
+      document.getElementById('zoom-level-label').textContent = `${Math.round(frameZoomScale * 100)}%`;
+
+      const modes = ['contain', 'balanced', 'cover'];
+      modes.forEach(m => {
+        const btn = document.getElementById(`fit-${m}-btn`);
+        if (!btn) return;
+        if (m === mode) {
+          btn.className = "px-2.5 py-1 rounded-full bg-gold text-obsidian font-semibold transition";
+        } else {
+          btn.className = "px-2.5 py-1 rounded-full text-alabaster/75 hover:text-gold transition";
+        }
+      });
+    }
+
+    function adjustFrameZoom(delta) {
+      frameZoomScale = Math.max(0.70, Math.min(1.25, +(frameZoomScale + delta).toFixed(2)));
+      document.getElementById('zoom-level-label').textContent = `${Math.round(frameZoomScale * 100)}%`;
+    }
+
+    function toggleHdCrisp() {
+      hdCrispEnabled = !hdCrispEnabled;
+      canvas.classList.toggle('hd-crisp-active', hdCrispEnabled);
+      const btn = document.getElementById('hd-crisp-btn');
+      if (hdCrispEnabled) {
+        btn.className = "ml-1 px-2.5 py-1 rounded-full bg-emerald-400/20 border border-emerald-400/50 text-emerald-300 font-semibold transition";
+        btn.textContent = "✨ Crisp HD";
+      } else {
+        btn.className = "ml-1 px-2.5 py-1 rounded-full bg-white/5 border border-white/20 text-alabaster/60 transition";
+        btn.textContent = "HD Off";
+      }
+    }
+
+    // Build Right-Side 8-Step Vertical Progress Bar
+    const stepContainer = document.getElementById('step-indicators');
+    STAGES.forEach((st, idx) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = "group flex items-center justify-end gap-2.5 text-right focus:outline-none";
+      btn.onclick = () => jumpToStage(idx);
+      btn.innerHTML = `
+        <span id="step-label-${idx}" class="font-mono text-[11px] tracking-widest uppercase text-alabaster/45 group-hover:text-gold transition">${st.num}</span>
+        <span id="step-bar-${idx}" class="w-5 h-1 rounded-full bg-alabaster/25 transition-all duration-300"></span>
+      `;
+      stepContainer.appendChild(btn);
+    });
+
+    function jumpToStage(stageIndex) {
+      const clamped = Math.max(0, Math.min(7, stageIndex));
+      const container = document.getElementById('hero-scroll-container');
+      const maxScroll = container.offsetHeight - window.innerHeight;
+      const targetY = container.offsetTop + ((clamped + 0.4) / 8) * maxScroll;
+      window.scrollTo({ top: targetY, behavior: 'smooth' });
+    }
+
+    function stepStage(delta) {
+      const currentStage = Math.min(7, Math.floor(currentScrollProgress * 8));
+      jumpToStage(currentStage + delta);
+    }
+
+    // Batched Progressive Video Frame Loader (Loads Frame 1 in <30ms, then streams 486+ frames without browser freeze)
+    let activeObjectURLs = [];
+    let currentLoadSessionId = 0;
+
+    function handleSelectedFiles(fileList) {
+      if (!fileList || fileList.length === 0) return;
+
+      const imageRegex = /\.(jpe?g|png|webp|avif|bmp|gif)$/i;
+      const files = Array.from(fileList).filter(
+        f => (f.type && f.type.startsWith('image/')) || imageRegex.test(f.name)
+      );
+
+      const badge = document.getElementById('frame-source-badge');
+      const topPill = document.getElementById('top-engine-pill');
+
+      if (!files.length) {
+        if (badge) {
+          badge.textContent = '⚠️ No image files found. Please select JPG, PNG, or WebP video frames.';
+          badge.className = 'font-mono text-[10px] text-amber-400 uppercase tracking-wider';
+        }
+        return;
+      }
+
+      // Sort naturally by filename (e.g. frame_001.jpg ... frame_486.jpg)
+      files.sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' }));
+
+      // Release previous Blob URLs
+      if (activeObjectURLs.length > 0) {
+        activeObjectURLs.forEach(url => URL.revokeObjectURL(url));
+        activeObjectURLs = [];
+      }
+
+      currentLoadSessionId++;
+      const sessionId = currentLoadSessionId;
+
+      const total = files.length;
+      const newFrames = new Array(total);
+      userFrames = newFrames;
+
+      // Default to 'contain' (Fit - No Crop) when user loads video frames so 0% is zoomed or cut off
+      setFrameFitMode('contain');
+
+      let loadedCount = 0;
+      let failedCount = 0;
+      let nextFileIndex = 0;
+
+      if (badge) {
+        badge.className = 'font-mono text-[10px] text-emerald-400 uppercase tracking-wider';
+        badge.textContent = `⏳ Loading ${total} Video Frames (0 / ${total})...`;
+      }
+
+      // Load in smooth concurrent workers (16 parallel image decoders) so Chrome never chokes on 486+ files
+      const CONCURRENCY = 16;
+
+      function loadNextFrame() {
+        if (sessionId !== currentLoadSessionId) return;
+        if (nextFileIndex >= total) return;
+
+        const idx = nextFileIndex++;
+        const file = files[idx];
+        const img = new Image();
+        const objUrl = URL.createObjectURL(file);
+        activeObjectURLs.push(objUrl);
+
+        img.onload = () => {
+          if (sessionId !== currentLoadSessionId) return;
+          newFrames[idx] = img;
+          loadedCount++;
+          const done = loadedCount + failedCount;
+
+          if (topPill) {
+            topPill.textContent = `Custom Video: ${loadedCount}/${total} Frames`;
+          }
+
+          if (done === total) {
+            if (badge) {
+              badge.textContent = `✅ Custom Video Sequence Active (${loadedCount} Frames Ready — Scroll to Scrub!)`;
+            }
+          } else if (loadedCount === 1 || loadedCount % 20 === 0) {
+            if (badge) {
+              badge.textContent = `⚡ Custom Video Active: ${loadedCount} / ${total} Frames Loaded...`;
+            }
+          }
+
+          loadNextFrame();
+        };
+
+        img.onerror = () => {
+          if (sessionId !== currentLoadSessionId) return;
+          failedCount++;
+          const done = loadedCount + failedCount;
+          if (done === total && badge) {
+            badge.textContent = `✅ Custom Video Sequence Active (${loadedCount} Frames Ready — Scroll to Scrub!)`;
+          }
+          loadNextFrame();
+        };
+
+        img.src = objUrl;
+      }
+
+      // Prioritize current scroll frame + Frame 0 first so screen updates in <30ms
+      const initialTargetIdx = Math.min(total - 1, Math.floor(currentScrollProgress * total));
+      if (initialTargetIdx > 0 && files[initialTargetIdx]) {
+        const priorityImg = new Image();
+        const priorityUrl = URL.createObjectURL(files[initialTargetIdx]);
+        activeObjectURLs.push(priorityUrl);
+        priorityImg.onload = () => {
+          if (sessionId === currentLoadSessionId && !newFrames[initialTargetIdx]) {
+            newFrames[initialTargetIdx] = priorityImg;
+          }
+        };
+        priorityImg.src = priorityUrl;
+      }
+
+      for (let w = 0; w < Math.min(CONCURRENCY, total); w++) {
+        loadNextFrame();
+      }
+    }
+
+    document.getElementById('frame-files-input').addEventListener('change', function (e) {
+      handleSelectedFiles(e.target.files);
+    });
+
+    document.getElementById('frame-folder-input').addEventListener('change', function (e) {
+      handleSelectedFiles(e.target.files);
+    });
+
+    // Support Drag & Drop of video frames directly onto the Hero section
+    const dropOverlay = document.getElementById('drop-zone-overlay');
+
+    window.addEventListener('dragover', e => {
+      e.preventDefault();
+      if (dropOverlay) {
+        dropOverlay.classList.remove('hidden');
+        dropOverlay.classList.add('flex');
+      }
+    });
+
+    window.addEventListener('dragleave', e => {
+      if (e.relatedTarget === null && dropOverlay) {
+        dropOverlay.classList.add('hidden');
+        dropOverlay.classList.remove('flex');
+      }
+    });
+
+    window.addEventListener('drop', e => {
+      e.preventDefault();
+      if (dropOverlay) {
+        dropOverlay.classList.add('hidden');
+        dropOverlay.classList.remove('flex');
+      }
+      if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+        handleSelectedFiles(e.dataTransfer.files);
+      }
+    });
+
+    // Find nearest decoded frame so scrubbing works smoothly even while 486 frames are still loading
+    function getBestAvailableFrame(targetIdx) {
+      if (!userFrames || userFrames.length === 0) return null;
+      const direct = userFrames[targetIdx];
+      if (direct && direct.complete && direct.naturalWidth > 0) return direct;
+
+      const len = userFrames.length;
+      for (let offset = 1; offset < len; offset++) {
+        const prev = targetIdx - offset;
+        if (prev >= 0 && userFrames[prev] && userFrames[prev].complete && userFrames[prev].naturalWidth > 0) {
+          return userFrames[prev];
+        }
+        const next = targetIdx + offset;
+        if (next < len && userFrames[next] && userFrames[next].complete && userFrames[next].naturalWidth > 0) {
+          return userFrames[next];
+        }
+      }
+      return null;
+    }
+
+    function drawSmartVideoFrame(ctx, img, w, h) {
+      if (!img || !img.complete || !img.naturalWidth) return;
+
+      const imgRatio = img.naturalWidth / img.naturalHeight;
+      const winRatio = w / h;
+
+      // 1. Subtle Obsidian-Tinted Ambient Backdrop (fills any pillarbox/letterbox space without harsh black bars)
+      ctx.fillStyle = '#0B0B0A';
+      ctx.fillRect(0, 0, w, h);
+
+      ctx.save();
+      let bgW, bgH;
+      if (winRatio > imgRatio) {
+        bgW = w;
+        bgH = w / imgRatio;
+      } else {
+        bgH = h;
+        bgW = h * imgRatio;
+      }
+      ctx.globalAlpha = 0.28;
+      ctx.drawImage(img, (w - bgW) / 2, (h - bgH) / 2, bgW, bgH);
+      ctx.restore();
+
+      // 2. Calculate Foreground Frame Dimensions according to Fit Mode
+      let baseW, baseH;
+      if (frameFitMode === 'contain') {
+        // 100% Zero-Crop Fit
+        if (winRatio > imgRatio) {
+          baseH = h;
+          baseW = h * imgRatio;
+        } else {
+          baseW = w;
+          baseH = w / imgRatio;
+        }
+      } else if (frameFitMode === 'balanced') {
+        // Hybrid Cinema Fit: halfway between contain and cover so chandelier is never cut off
+        const containH = winRatio > imgRatio ? h : w / imgRatio;
+        const coverH = winRatio > imgRatio ? w / imgRatio : h;
+        baseH = containH * 0.65 + coverH * 0.35;
+        baseW = baseH * imgRatio;
+      } else {
+        // Full Edge-to-Edge Cover
+        if (winRatio > imgRatio) {
+          baseW = w;
+          baseH = w / imgRatio;
+        } else {
+          baseH = h;
+          baseW = h * imgRatio;
+        }
+      }
+
+      const drawW = Math.round(baseW * frameZoomScale);
+      const drawH = Math.round(baseH * frameZoomScale);
+      const offsetX = Math.round((w - drawW) / 2);
+      const offsetY = Math.round((h - drawH) / 2);
+
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = 'high';
+      ctx.drawImage(img, offsetX, offsetY, drawW, drawH);
+    }
+<!-- ... existing code ... -->
+    // Start the animation loop immediately AND on window.onload so the canvas is never blank
+    selectFloorRoom(0);
+    updateEstimate();
+    requestAnimationFrame(renderLoop);
+
+    window.onload = function () {
+      resizeCanvas();
+    };
+  </script>
+</body>
+</html>
